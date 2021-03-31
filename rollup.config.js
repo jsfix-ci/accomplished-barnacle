@@ -2,7 +2,7 @@ import typescript from 'rollup-plugin-typescript2';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export default {
-    input: 'src/index.ts',
+    input: 'src/main.ts',
     output: {
       file: 'dist/index.js',
       format: 'umd',
