@@ -37,7 +37,7 @@
     "choicest-barnacle": "2.3.0",
     "eventsource": "^1.1.0",
     "outstanding-barnacle": "^6.3.1",
-    "prime-barnacle": "^2.3.1",
+    "prime-barnacle": "^2.4.0",
     "rxjs": "^6.6.7",
     "sitka": "^1.0.5"
   }

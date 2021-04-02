@@ -1,5 +1,5 @@
-import { IEventSourceFactory } from 'prime-barnacle/dist/IEventSourceFactory';
-import EventSource = require('eventsource');
+import { IEventSourceFactory } from 'prime-barnacle';
+import EventSource from 'eventsource';
 
 export class EventSourceFactory implements IEventSourceFactory {
     createEventSource(url: string): EventSource {
