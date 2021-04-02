@@ -22,10 +22,15 @@ export class Backend implements ITopicService {
         this.configuration = configuration;
     }
 
-    public connect(): void {
+    public async connect(): Promise<void> {
         this.logger.info('connecting with backend at ' + this.configuration.endpoint);
         this.client = new Client(this.configuration.endpoint, new EventSourceFactory(), new HttpClient(this.logger));
         this.connectWithTopics();
+
+        // block until all topics have been received
+        while (this.client.hasPendingRequests()) {
+            await new Promise(r => setTimeout(r, 100));
+        }
     }
 
     public disconnect(): void {

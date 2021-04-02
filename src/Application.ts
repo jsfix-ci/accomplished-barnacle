@@ -12,23 +12,25 @@ export class Application {
         this.logger = logger;
     }
 
-    public run(): void {
-        this.initializeBackend();
-        this.initializeTopicService();
+    public async run(): Promise<void> {
+        await this.initialize();
         this.logger.info('started.');
-        this.backend.disconnect();
+        this.tearDown();
     }
 
-    private initializeBackend(): void {
+    private tearDown(): void {
+        this.backend.disconnect();
+        this.logger.info('tore down.');
+    }
+
+    private async initialize(): Promise<void> {
         const configurationFileReader = new ConfigurationFileReader(this.logger);
         const defaultBackendConfigurationFile = './backend.json';
         const backendConfiguration = configurationFileReader.read(defaultBackendConfigurationFile);
 
         this.backend = new Backend(backendConfiguration, this.logger);
-        this.backend.connect();
-    }
-
-    private initializeTopicService() {
         this.topicService = this.backend;
+        await this.backend.connect();
+        this.logger.info('initialized.');
     }
 }
