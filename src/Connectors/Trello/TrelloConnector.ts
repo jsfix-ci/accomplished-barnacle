@@ -1,3 +1,5 @@
+import { Topic } from "choicest-barnacle";
+import { ITopicService } from '../../Backend/ITopicService';
 import { Connector } from '../Connector';
 import { TrelloConfiguration } from './TrelloConfiguration';
 
@@ -5,11 +7,11 @@ export class TrelloConnector extends Connector {
     private configuration = new TrelloConfiguration();
 
     constructor() {
-        super();
+        super('trello');
         this.setConfiguration(this.configuration);
     }
 
-    name(): string {
-        return 'trello';
+    public selectTopic(topicService: ITopicService): Topic {
+        return topicService.getAvailableTopics().find(topic => topic.id === this.configuration.topic());
     }
 }

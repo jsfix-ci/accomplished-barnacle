@@ -7,7 +7,6 @@ import { ISettings } from './ISettings';
 export class Application {
     private logger: Logger;
     private backend: Backend;
-    private topicService: ITopicService;
     private connector: Connector;
     private settings: ISettings;
 
@@ -18,7 +17,8 @@ export class Application {
 
     public async run(): Promise<void> {
         await this.initialize();
-        this.logger.info('started.');
+        const topic = this.connector.selectTopic(this.backend as ITopicService);
+
         this.tearDown();
     }
 
@@ -29,7 +29,6 @@ export class Application {
 
     private async initialize(): Promise<void> {
         this.backend = new Backend(this.settings.backendConfiguration(), this.logger);
-        this.topicService = this.backend;
         await this.backend.connect();
 
         this.connector = this.settings.selectedConnector();
