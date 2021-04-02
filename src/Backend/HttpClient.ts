@@ -14,8 +14,28 @@ export class HttpClient implements IHTTPClient {
     }
 
     postJson(clientUrl: string, json: ObjectEventREST): void {
-        this.logger.debug('POST Json' + clientUrl + ' ' + json);
-        throw new Error('Method not implemented.');
+        try {
+            this.logger.debug('POST Json ' + clientUrl + ' ' + json);
+            const asString = JSON.stringify(json);
+            const urlObject = new url.URL(clientUrl);
+            const options = {
+                hostname: urlObject.hostname,
+                port: urlObject.port,
+                path: urlObject.pathname,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': asString.length
+                }
+            }
+
+            const req = http.request(options);
+
+            req.write(asString);
+            req.end();
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     get(clientUrl: string): Observable<ObjectEventREST> {
