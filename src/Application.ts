@@ -23,7 +23,8 @@ export class Application {
         this.connector = this.settings.selectedConnector();
         await this.initializeBackend();
         await this.initializeDomainModel();
-        this.reconcilitateDifferences();
+        await this.reconcilitateDifferences();
+
         this.tearDown();
     }
 
@@ -32,8 +33,13 @@ export class Application {
         this.logger.debug('tore down.');
     }
 
-    private reconcilitateDifferences(): void {
+    private async reconcilitateDifferences(): Promise<void> {
         this.connector.reconcilitateStateModel(this.topic, this.domainModel.getDomainModel().stateModels, this.domainModel);
+
+        // block until all objects have been received
+        while (this.backend.hasPendingRequests()) {
+            await new Promise(r => setTimeout(r, 100));
+        }
     }
 
     private async initializeBackend(): Promise<void> {
