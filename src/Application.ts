@@ -1,10 +1,12 @@
 import { Logger } from 'sitka';
 import { Backend } from './Backend/Backend';
+import { ITopicService } from './Backend/ITopicService';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
 
 export class Application {
     private logger: Logger;
     private backend: Backend;
+    private topicService: ITopicService;
 
     constructor(logger: Logger) {
         this.logger = logger;
@@ -12,7 +14,8 @@ export class Application {
 
     public run(): void {
         this.initializeBackend();
-        this.logger.info('started');
+        this.initializeTopicService();
+        this.logger.info('started.');
     }
 
     private initializeBackend(): void {
@@ -22,5 +25,13 @@ export class Application {
 
         this.backend = new Backend(backendConfiguration, this.logger);
         this.backend.connect();
+    }
+
+    private initializeTopicService() {
+        this.topicService = this.backend;
+        this.logger.info('available topics are: ');
+        this.topicService.getAvailableTopics().forEach(topic => {
+            this.logger.info(topic.id + ': ' + topic.name);
+        })
     }
 }

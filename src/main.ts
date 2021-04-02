@@ -4,7 +4,7 @@ import { Application } from './Application';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loggerConfig: any = {
     name: 'accomplished-barnacle', level: Logger.Level.ALL,
-    format: '[%{TIMESTAMP}] [%{LEVEL}] : %{MESSAGE}'
+    format: '[%{LEVEL}] : %{MESSAGE}'
 };
 const logger = Logger.getLogger(loggerConfig);
 
