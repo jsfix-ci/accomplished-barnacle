@@ -1,11 +1,11 @@
-import { Topic } from 'choicest-barnacle';
+import { ObjectEvent, Topic } from 'choicest-barnacle';
 import { Logger } from 'sitka';
 import { ITopicService } from './ITopicService';
 import { HttpClient } from './HttpClient';
 import { BackendConfiguration } from '../ISettings';
 import { Client } from 'prime-barnacle';
 import { EventSourceFactory } from './EventSourceFactory';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 export class Backend implements ITopicService {
     private logger: Logger;
@@ -28,6 +28,18 @@ export class Backend implements ITopicService {
         while (this.client.hasPendingRequests()) {
             await new Promise(r => setTimeout(r, 100));
         }
+    }
+
+    public getObjectEvents(): Observable<ObjectEvent> {
+        return this.client.publishedObjectEvents;
+    }
+
+    public switchToTopic(topic: Topic): void {
+        this.client.switchToTopic(topic);
+    }
+
+    public storeObjectEvent(objectEvent: ObjectEvent): void {
+        this.client.storeObjectEvent(objectEvent);
     }
 
     public disconnect(): void {
