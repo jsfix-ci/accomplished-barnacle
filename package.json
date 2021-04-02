@@ -1,6 +1,6 @@
 {
   "name": "accomplished-barnacle",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "A CLI to extract project history.",
   "keywords": [],
   "author": "Axel",
@@ -9,6 +9,10 @@
     "type": "git",
     "url": "https://github.com/axelkr/accomplished-barnacle.git"
   },
+  "files": [
+    "/src/",
+    "backend.sample.json"
+  ],
   "main": "src/main.js",
   "scripts": {
     "start": "ts-node --project tsconfig.json src/main.ts",
