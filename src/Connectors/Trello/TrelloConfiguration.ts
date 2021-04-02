@@ -1,13 +1,42 @@
 import { Configuration } from '../Configuration';
 
+type StateModel = {
+    states: string[],
+    initialState: string,
+    finalStates: string[],
+    transitions: string[2][]
+}
+
+type TrelloJsonConfiguration = {
+    applicationKey: string,
+    board: string,
+    token: string,
+    topic: string,
+    stateModel: StateModel
+}
+
 export class TrelloConfiguration extends Configuration {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    read(configuration: any): void {
-        this.validate(configuration);
+    private _applicationKey: string;
+    private _board: string;
+    private _token: string;
+    private _topic: string;
+    private _states: string[];
+    private _initialState: string;
+    private _finalStates: string[];
+    private _transitions: string[2][];
+
+    read(configuration: TrelloJsonConfiguration): void {
+        this._applicationKey = configuration.applicationKey;
+        this._board = configuration.board;
+        this._token = configuration.token;
+        this._topic = configuration.topic;
+        this._states = configuration.stateModel.states;
+        this._initialState = configuration.stateModel.initialState;
+        this._finalStates = configuration.stateModel.finalStates;
+        this._transitions = configuration.stateModel.transitions;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    validate(configuration: any): void {
+    validate(configuration: TrelloJsonConfiguration): void {
         this.verifyThatConfigurationHasProperty(configuration, 'applicationKey');
         this.verifyThatConfigurationHasProperty(configuration, 'board');
         this.verifyThatConfigurationHasProperty(configuration, 'token');
@@ -21,8 +50,40 @@ export class TrelloConfiguration extends Configuration {
         this.validateStateModel(configuration.stateModel);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    private validateStateModel(stateModel: any) {
+    public applicationKey(): string {
+        return this._applicationKey;
+    }
+
+    public board(): string {
+        return this._board;
+    }
+
+    public token(): string {
+        return this._token;
+    }
+
+    public topic(): string {
+        return this._topic;
+    }
+
+    public states(): string[] {
+        return this._states;
+    }
+
+
+    public initialState(): string {
+        return this._initialState;
+    }
+
+    public finalStates(): string[] {
+        return this._finalStates;
+    }
+
+    public transitions(): string[2][] {
+        return this._transitions;
+    }
+
+    private validateStateModel(stateModel: StateModel) {
         const stateIsPartOfStates = (aState: string) => stateModel.states.find((x: string) => x === aState) !== undefined;
         if (!stateIsPartOfStates(stateModel.initialState)) {
             throw new Error('states does not contain initial state (' + stateModel.initialState + ')');
