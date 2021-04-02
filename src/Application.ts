@@ -31,7 +31,7 @@ export class Application {
     }
 
     private async reconcilitateDifferences(): Promise<void> {
-        // tbd
+        this.connector.reconcilitateStateModel(this.domainModel.getDomainModel().stateModels, this.domainModel);
     }
 
     private async initializeBackend(): Promise<void> {

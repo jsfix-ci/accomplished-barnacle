@@ -1,9 +1,13 @@
 import { Topic } from "choicest-barnacle";
+import { StateModelCollection } from "outstanding-barnacle";
+import { IObjectEventProcessor } from "../IObjectEventProcessor";
 import { ITopicService } from "../Backend/ITopicService";
 import { Configuration } from "./Configuration"
+import { StateModelDifferencesService } from './StateModelDifferencesService'
 
 export abstract class Connector {
     private _configuration: Configuration = undefined;
+    private _stateModelDifferencesService: StateModelDifferencesService = undefined;
     public readonly name: string;
 
     constructor(name: string) {
@@ -21,7 +25,17 @@ export abstract class Connector {
         this._configuration.read(configuration);
     }
 
+    public reconcilitateStateModel(stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor): void {
+        if (this._stateModelDifferencesService === undefined) {
+            return;
+        }
+    }
+
     protected setConfiguration(configuration: Configuration): void {
         this._configuration = configuration;
+    }
+
+    protected setStateModelDifferencesService(stateModelDifferencesService: StateModelDifferencesService): void {
+        this._stateModelDifferencesService = stateModelDifferencesService;
     }
 }
