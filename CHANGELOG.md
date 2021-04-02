@@ -1,3 +1,6 @@
+# v0.3.0
+- synchronize state model for trello connector
+
 # v0.2.1
 - fix: don't publish documentation
 
