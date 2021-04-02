@@ -7,6 +7,6 @@ package-lock.json
 test-results.xml
 
 # configuration
-backend.json
-/connector.trello.json
-connector.json
+/backend.json
+/connector.*.json
+/connector.json
