@@ -8,7 +8,7 @@ export class Application {
     private logger: Logger;
     private backend: Backend;
     private topicService: ITopicService;
-    private current: Connector;
+    private connector: Connector;
     private settings: ISettings;
 
     constructor(settings: ISettings, logger: Logger) {
@@ -32,7 +32,7 @@ export class Application {
         this.topicService = this.backend;
         await this.backend.connect();
 
-        this.current = this.settings.selectedConnector();
+        this.connector = this.settings.selectedConnector();
         this.logger.info('initialized.');
     }
 }
