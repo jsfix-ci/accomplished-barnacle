@@ -1,0 +1,21 @@
+# Connector for Trello
+This connector converts one trello board into a barnacle's domain object and stores it in the backend.
+
+## Configuration
+Please see https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/ for how to get the access keys and tokens required by the configuration. The topic id has to be generated first either through Barnacle website or application.
+
+```json
+{
+    "applicationKey": <<your application key>>,
+    "board": <<id of your board>>,
+    "token": <<your server token>>,
+    "stateModel": {
+        "states": ["list_1","list_2", ... , "list_n"], // lists that make up your project states
+        "initialState": "list_1", // state that's used as starting state, i.e. where you initially place your cards. Most often called Backlog, Inbox, Todo
+        "finalStates": ["list_3","list_5"], // lists that are final, i.e. where cards are placed if you're finished with them. Most often called Done.
+        "transitions":[["list_1","list_2"],
+            ["list_1","list_3"],["list_2","list_3"]] // expected flow between lists: If you have a card on a list, To which other lists can you move them and it makes sense to you?
+    },
+    "topic": <<GUID of topic in backend>>
+}
+```

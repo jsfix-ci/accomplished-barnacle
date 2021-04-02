@@ -8,5 +8,5 @@ test-results.xml
 
 # configuration
 backend.json
-connector.trello.json
+/connector.trello.json
 connector.json
