@@ -29,6 +29,7 @@ export abstract class Connector {
         if (this._stateModelDifferencesService === undefined) {
             return;
         }
+        this._stateModelDifferencesService.reconciliate(stateModels, objectEventProcessor);
     }
 
     protected setConfiguration(configuration: Configuration): void {
