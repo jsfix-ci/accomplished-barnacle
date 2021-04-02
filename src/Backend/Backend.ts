@@ -2,13 +2,10 @@ import { Topic } from 'choicest-barnacle';
 import { Logger } from 'sitka';
 import { ITopicService } from './ITopicService';
 import { HttpClient } from './HttpClient';
+import { BackendConfiguration } from '../ISettings';
 import { Client } from 'prime-barnacle';
 import { EventSourceFactory } from './EventSourceFactory';
 import { Subscription } from 'rxjs';
-
-type BackendConfiguration = {
-    endpoint: string
-};
 
 export class Backend implements ITopicService {
     private logger: Logger;
