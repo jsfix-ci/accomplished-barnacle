@@ -27,6 +27,10 @@ export class Backend implements ITopicService {
         this.client.getAllTopics();
     }
 
+    public disconnect(): void {
+        this.logger.info('disconnecting from backend at ' + this.configuration.endpoint);
+    }
+
     public getAvailableTopics(): Topic[] {
         return [...this.topics];
     }

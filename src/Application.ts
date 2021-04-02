@@ -16,6 +16,7 @@ export class Application {
         this.initializeBackend();
         this.initializeTopicService();
         this.logger.info('started.');
+        this.backend.disconnect();
     }
 
     private initializeBackend(): void {
@@ -31,7 +32,7 @@ export class Application {
         this.topicService = this.backend;
         this.logger.info('available topics are: ');
         this.topicService.getAvailableTopics().forEach(topic => {
-            this.logger.info(topic.id + ': ' + topic.name);
+            this.logger.info('* ' + topic.id + ': ' + topic.name);
         })
     }
 }
