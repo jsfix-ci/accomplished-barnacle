@@ -12,11 +12,14 @@ const loggerConfig: any = {
 };
 const logger = Logger.getLogger(loggerConfig);
 
-const settings = new Settings(logger);
-settings.parseCommandLineArguments(process.argv);
-
 const availableConnectors = new Map<string, Connector>();
 availableConnectors.set('trello', new TrelloConnector());
+
+const namesOfAvailableConnectors: string[] = [];
+availableConnectors.forEach((_value, key) => namesOfAvailableConnectors.push(key));
+
+const settings = new Settings(logger, namesOfAvailableConnectors);
+settings.parseCommandLineArguments(process.argv);
 
 const application = new Application(availableConnectors, logger);
 application.run();
