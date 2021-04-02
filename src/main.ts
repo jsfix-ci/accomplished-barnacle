@@ -19,8 +19,12 @@ AllConnectors.allConnectors().forEach(connector => {
     namesOfAvailableConnectors.push(connector.name());
 })
 
-const settings = new Settings(logger, namesOfAvailableConnectors);
-settings.parseCommandLineArguments(process.argv);
+try {
+    const settings = new Settings(logger, namesOfAvailableConnectors);
+    settings.parseCommandLineArguments(process.argv);
 
-const application = new Application(availableConnectors, settings, logger);
-application.run();
+    const application = new Application(availableConnectors, settings, logger);
+    application.run();
+} catch (e) {
+    console.log(e.message);
+}
