@@ -3,7 +3,7 @@ import { Backend } from './Backend/Backend';
 import { ITopicService } from './Backend/ITopicService';
 import { Connector } from './Connectors/Connector';
 import { ISettings } from './ISettings';
-import { DomainModel } from './DomainModel/DomainModel';
+import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 
 export class Application {

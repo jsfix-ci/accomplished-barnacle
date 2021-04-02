@@ -1,7 +1,7 @@
 import { ObjectEvent, Topic } from "choicest-barnacle";
 import { HeijunkaBoard, ObjectEventCommandProcessor } from "outstanding-barnacle";
-import { IObjectEventProcessor } from "../IObjectEventProcessor";
-import { Backend } from "../Backend/Backend";
+import { IObjectEventProcessor } from "./IObjectEventProcessor";
+import { Backend } from "./Backend/Backend";
 
 export class DomainModel implements IObjectEventProcessor {
     private localProcessor: ObjectEventCommandProcessor;
