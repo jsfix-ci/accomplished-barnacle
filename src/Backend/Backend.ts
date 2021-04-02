@@ -1,6 +1,8 @@
 import { Topic } from 'choicest-barnacle';
 import { Logger } from 'sitka';
 import { ITopicService } from './ITopicService';
+import { HttpClient } from './HttpClient';
+import { Client, EventSourceFactory } from 'prime-barnacle';
 
 type BackendConfiguration = {
     endpoint: string
@@ -9,6 +11,8 @@ type BackendConfiguration = {
 export class Backend implements ITopicService {
     private logger: Logger;
     private configuration: BackendConfiguration;
+    private client: Client;
+    private topics: Topic[] = [];
 
     constructor(configuration: BackendConfiguration, logger: Logger) {
         this.logger = logger;
@@ -17,13 +21,12 @@ export class Backend implements ITopicService {
 
     public connect(): void {
         this.logger.info('connecting with backend at ' + this.configuration.endpoint);
-    }
-
-    public find(name: string): Topic {
-        return new Topic(name, name);
+        this.client = new Client(this.configuration.endpoint, new EventSourceFactory(), new HttpClient());
+        // connect to    readonly publishedTopics: Observable<Topic>;
+        this.client.getAllTopics();
     }
 
     public getAvailableTopics(): Topic[] {
-        return [new Topic('dummy', 'dummy')];
+        return [...this.topics];
     }
 }
