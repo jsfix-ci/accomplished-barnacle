@@ -24,7 +24,7 @@ export class Backend implements ITopicService {
 
     public connect(): void {
         this.logger.info('connecting with backend at ' + this.configuration.endpoint);
-        this.client = new Client(this.configuration.endpoint, new EventSourceFactory(), new HttpClient());
+        this.client = new Client(this.configuration.endpoint, new EventSourceFactory(), new HttpClient(this.logger));
         this.connectWithTopics();
     }
 
