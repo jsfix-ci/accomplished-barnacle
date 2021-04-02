@@ -3,7 +3,7 @@ import { Application } from './Application';
 import { Settings } from './Settings';
 
 import { Connector } from './Connectors/Connector';
-import { TrelloConnector } from './Connectors/Trello/TrelloConnector';
+import { AllConnectors } from './Connectors/AllConnectors';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loggerConfig: any = {
@@ -12,11 +12,12 @@ const loggerConfig: any = {
 };
 const logger = Logger.getLogger(loggerConfig);
 
-const availableConnectors = new Map<string, Connector>();
-availableConnectors.set('trello', new TrelloConnector());
-
 const namesOfAvailableConnectors: string[] = [];
-availableConnectors.forEach((_value, key) => namesOfAvailableConnectors.push(key));
+const availableConnectors = new Map<string, Connector>();
+AllConnectors.allConnectors().forEach(connector => {
+    availableConnectors.set(connector.name(), connector);
+    namesOfAvailableConnectors.push(connector.name());
+})
 
 const settings = new Settings(logger, namesOfAvailableConnectors);
 settings.parseCommandLineArguments(process.argv);

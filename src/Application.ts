@@ -15,7 +15,6 @@ export class Application {
     constructor(connectors: Map<string, Connector>, settings: ISettings, logger: Logger) {
         this.logger = logger;
         this.connectors = connectors;
-        this.current = this.connectors.get('trello');
         this.settings = settings;
     }
 
@@ -34,6 +33,9 @@ export class Application {
         this.backend = new Backend(this.settings.backendConfiguration(), this.logger);
         this.topicService = this.backend;
         await this.backend.connect();
+
+        this.current = this.connectors.get(this.settings.selectedConnector());
+        this.current.initialize(this.settings.connectorConfiguration());
         this.logger.info('initialized.');
     }
 }
