@@ -3,7 +3,7 @@ import url from 'url';
 
 import { Logger } from 'sitka';
 import { IHTTPClient } from 'prime-barnacle';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ObjectEventREST } from 'choicest-barnacle';
 
 export class HttpClient implements IHTTPClient {
@@ -20,38 +20,37 @@ export class HttpClient implements IHTTPClient {
 
     get(clientUrl: string): Observable<ObjectEventREST> {
         this.logger.info('GET ' + clientUrl);
-        const reporter = new Subject<ObjectEventREST>();
         const urlObject = new url.URL(clientUrl);
 
-        http.get(urlObject,
-            (res) => {
-                const statusCode = res.statusCode;
-                if (statusCode !== 200) {
-                    reporter.error(statusCode);
-                    // consume response data to free up memory
-                    res.resume;
-                    return;
-                }
-
-                res.setEncoding('utf8');
-                let rawData = '';
-                res.on('data', (chunk) => rawData += chunk);
-                res.on('end', () => {
-                    try {
-                        const parsedData = JSON.parse(rawData);
-                        rawData = '';
-                        reporter.next(parsedData);
-                        reporter.complete();
-
-                    } catch (e) {
-                        reporter.error(statusCode);
+        return new Observable<ObjectEventREST>(subscriber => {
+            http.get(urlObject,
+                (res) => {
+                    const statusCode = res.statusCode;
+                    if (statusCode !== 200) {
+                        subscriber.error(statusCode);
+                        // consume response data to free up memory
+                        res.resume;
+                        return;
                     }
+
+                    res.setEncoding('utf8');
+                    let rawData = '';
+                    res.on('data', (chunk) => rawData += chunk);
+                    res.on('end', () => {
+                        try {
+                            const parsedData = JSON.parse(rawData);
+                            rawData = '';
+
+                            parsedData.map((aObject: ObjectEventREST) => subscriber.next(aObject));
+                            subscriber.complete();
+
+                        } catch (e) {
+                            subscriber.error(statusCode);
+                        }
+                    });
+                }).on('error', (e) => {
+                    subscriber.error(e.message);
                 });
-            }).on('error', (e) => {
-                reporter.error(e.message);
-            });
-
-        return reporter;
+        });
     }
-
 }
