@@ -70,7 +70,6 @@ export class TrelloConfiguration extends Configuration {
         return this._states;
     }
 
-
     public initialState(): string {
         return this._initialState;
     }
