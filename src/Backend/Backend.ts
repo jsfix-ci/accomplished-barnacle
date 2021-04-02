@@ -48,7 +48,6 @@ export class Backend implements ITopicService {
         }
         this.newTopicStream = this.client.publishedTopics.subscribe((topic: Topic) => {
             this.topics.push(topic);
-            this.logger.info('* ' + topic.id + ': ' + topic.name);
         });
         this.client.getAllTopics();
     }

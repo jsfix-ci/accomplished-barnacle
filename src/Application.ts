@@ -15,6 +15,10 @@ export class Application {
     public async run(): Promise<void> {
         await this.initialize();
         this.logger.info('started.');
+        this.logger.info('available topics: ');
+        this.topicService.getAvailableTopics().forEach(topic => {
+            this.logger.info('* ' + topic.name + ' (' + topic.id + ')');
+        })
         this.tearDown();
     }
 
