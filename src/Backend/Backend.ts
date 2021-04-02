@@ -38,13 +38,20 @@ export class Backend implements ITopicService {
     }
 
     private connectWithTopics(): void {
+        if (this.newTopicStream !== undefined) {
+            this.disconnectWithTopics();
+        }
         this.newTopicStream = this.client.publishedTopics.subscribe((topic: Topic) => {
             this.topics.push(topic);
+            this.logger.info('* ' + topic.id + ': ' + topic.name);
         });
         this.client.getAllTopics();
     }
 
     private disconnectWithTopics(): void {
+        if (this.newTopicStream === undefined) {
+            return;
+        }
         this.newTopicStream.unsubscribe();
         this.newTopicStream = undefined;
     }

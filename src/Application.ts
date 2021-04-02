@@ -30,9 +30,5 @@ export class Application {
 
     private initializeTopicService() {
         this.topicService = this.backend;
-        this.logger.info('available topics are: ');
-        this.topicService.getAvailableTopics().forEach(topic => {
-            this.logger.info('* ' + topic.id + ': ' + topic.name);
-        })
     }
 }
