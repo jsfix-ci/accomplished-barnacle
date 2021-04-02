@@ -1,9 +1,10 @@
 # build artefacts
 dist/
+node_modules/
 package-lock.json
 
 #test artefacts
 test-results.xml
 
-# Dependency directories
-node_modules/
+# configuration
+backend.json
