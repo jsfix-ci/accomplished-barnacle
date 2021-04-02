@@ -21,37 +21,33 @@ export class HttpClient implements IHTTPClient {
     get(clientUrl: string): Observable<ObjectEventREST> {
         this.logger.info('GET ' + clientUrl);
         const reporter = new Subject<ObjectEventREST>();
-        const requestLogger = this.logger;
-        const urlObject = new URL(clientUrl);
+        const urlObject = new url.URL(clientUrl);
 
         http.get(urlObject,
             (res) => {
                 const statusCode = res.statusCode;
                 if (statusCode !== 200) {
                     reporter.error(statusCode);
-                    requestLogger.error(statusCode);
                     // consume response data to free up memory
                     res.resume;
                     return;
                 }
 
                 res.setEncoding('utf8');
-                let rawData: string;
+                let rawData = '';
                 res.on('data', (chunk) => rawData += chunk);
                 res.on('end', () => {
                     try {
                         const parsedData = JSON.parse(rawData);
-                        requestLogger.info(rawData);
+                        rawData = '';
                         reporter.next(parsedData);
                         reporter.complete();
 
                     } catch (e) {
-                        requestLogger.error(e);
                         reporter.error(statusCode);
                     }
                 });
             }).on('error', (e) => {
-                requestLogger.error(e.message);
                 reporter.error(e.message);
             });
 

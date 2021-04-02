@@ -15,7 +15,7 @@ export class Backend implements ITopicService {
     private configuration: BackendConfiguration;
     private client: Client;
     private topics: Topic[] = [];
-    private newTopicStream: Subscription;
+    private newTopicStream: Subscription = undefined;
 
     constructor(configuration: BackendConfiguration, logger: Logger) {
         this.logger = logger;
