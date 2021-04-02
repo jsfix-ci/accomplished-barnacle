@@ -5,7 +5,7 @@ export class TrelloConnector extends Connector {
         return 'trello';
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    initialize(configuration: any): void {
+    readConfiguration(configuration: any): void {
         // TBD
         console.log(configuration);
     }

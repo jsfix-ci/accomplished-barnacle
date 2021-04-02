@@ -20,7 +20,7 @@ export class ConnectorFactory {
         if (connector === undefined) {
             throw new Error("unknown connector name " + connectorName);
         }
-        connector.initialize(connectorSettings);
+        connector.readConfiguration(connectorSettings);
         return connector;
     }
 }
