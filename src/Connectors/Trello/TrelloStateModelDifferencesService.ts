@@ -35,6 +35,7 @@ export class TrelloStateModelDifferencesService extends StateModelDifferencesSer
             finalStates.push(states.find(aState => aState.name === aFinalStateName));
         })
         const trashState: State = new State(UUIDGenerator.createUUID(), 'Trash');
+        states.push(trashState);
         const stateModel = new StateModel(id, this.stateModelName, states, initialState, finalStates, trashState);
         this.configuration.transitions().forEach(aTransition => {
             const fromState = states.find(aState => aState.name === aTransition[0]);
