@@ -1,5 +1,5 @@
 import { Logger } from 'sitka';
-import { Backend } from './Backend';
+import { Backend } from './Backend/Backend';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
 
 export class Application {
@@ -21,5 +21,6 @@ export class Application {
         const backendConfiguration = configurationFileReader.read(defaultBackendConfigurationFile);
 
         this.backend = new Backend(backendConfiguration, this.logger);
+        this.backend.connect();
     }
 }
