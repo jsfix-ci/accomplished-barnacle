@@ -45,6 +45,6 @@ export class DomainModel implements IObjectEventProcessor {
         if (objectEvent.topic !== this.topic.id) {
             return;
         }
-        this.backend;
+        this.backend.storeObjectEvent(objectEvent);
     }
 }
