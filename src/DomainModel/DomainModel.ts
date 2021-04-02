@@ -1,8 +1,9 @@
 import { ObjectEvent, Topic } from "choicest-barnacle";
 import { HeijunkaBoard, ObjectEventCommandProcessor } from "outstanding-barnacle";
+import { IObjectEventProcessor } from "../IObjectEventProcessor";
 import { Backend } from "../Backend/Backend";
 
-export class DomainModel {
+export class DomainModel implements IObjectEventProcessor {
     private localProcessor: ObjectEventCommandProcessor;
     private topic: Topic;
     private backend: Backend;
@@ -17,6 +18,10 @@ export class DomainModel {
             this.processLocalDomainModel(objectEvent);
         });
         this.backend.switchToTopic(topic);
+        // block until all objects have been received
+        while (this.backend.hasPendingRequests()) {
+            await new Promise(r => setTimeout(r, 100));
+        }
     }
 
     public getDomainModel(): HeijunkaBoard {

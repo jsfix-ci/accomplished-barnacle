@@ -30,6 +30,10 @@ export class Backend implements ITopicService {
         }
     }
 
+    public hasPendingRequests(): boolean {
+        return this.client.hasPendingRequests();
+    }
+
     public getObjectEvents(): Observable<ObjectEvent> {
         return this.client.publishedObjectEvents;
     }
