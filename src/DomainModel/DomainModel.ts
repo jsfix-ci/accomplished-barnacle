@@ -14,6 +14,7 @@ export class DomainModel implements IObjectEventProcessor {
 
     public async switchToTopic(topic: Topic): Promise<void> {
         this.localProcessor = new ObjectEventCommandProcessor();
+        this.topic = topic;
         this.backend.getObjectEvents().subscribe((objectEvent: ObjectEvent) => {
             this.processLocalDomainModel(objectEvent);
         });
