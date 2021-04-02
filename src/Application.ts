@@ -8,13 +8,11 @@ export class Application {
     private logger: Logger;
     private backend: Backend;
     private topicService: ITopicService;
-    private connectors: Map<string, Connector>;
     private current: Connector;
     private settings: ISettings;
 
-    constructor(connectors: Map<string, Connector>, settings: ISettings, logger: Logger) {
+    constructor(settings: ISettings, logger: Logger) {
         this.logger = logger;
-        this.connectors = connectors;
         this.settings = settings;
     }
 
@@ -34,8 +32,7 @@ export class Application {
         this.topicService = this.backend;
         await this.backend.connect();
 
-        this.current = this.connectors.get(this.settings.selectedConnector());
-        this.current.initialize(this.settings.connectorConfiguration());
+        this.current = this.settings.selectedConnector();
         this.logger.info('initialized.');
     }
 }

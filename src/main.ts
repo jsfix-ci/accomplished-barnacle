@@ -2,8 +2,7 @@ import { Logger } from 'sitka';
 import { Application } from './Application';
 import { Settings } from './Settings';
 
-import { Connector } from './Connectors/Connector';
-import { AllConnectors } from './Connectors/AllConnectors';
+import { ConnectorFactory } from './Connectors/ConnectorFactory';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const loggerConfig: any = {
@@ -12,18 +11,11 @@ const loggerConfig: any = {
 };
 const logger = Logger.getLogger(loggerConfig);
 
-const namesOfAvailableConnectors: string[] = [];
-const availableConnectors = new Map<string, Connector>();
-AllConnectors.allConnectors().forEach(connector => {
-    availableConnectors.set(connector.name(), connector);
-    namesOfAvailableConnectors.push(connector.name());
-})
-
 try {
-    const settings = new Settings(logger, namesOfAvailableConnectors);
+    const settings = new Settings(logger, new ConnectorFactory());
     settings.parseCommandLineArguments(process.argv);
 
-    const application = new Application(availableConnectors, settings, logger);
+    const application = new Application(settings, logger);
     application.run();
 } catch (e) {
     console.log(e.message);

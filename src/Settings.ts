@@ -2,6 +2,8 @@ import { Logger } from 'sitka';
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
 import { ISettings, BackendConfiguration } from './ISettings';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
+import { Connector } from './Connectors/Connector';
+import { ConnectorFactory } from './Connectors/ConnectorFactory';
 
 enum SettingKey {
     BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',
@@ -11,15 +13,15 @@ enum SettingKey {
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     private logger: Logger;
-    private configuredConnectors: string[];
+    private connectorFactory: ConnectorFactory;
     private backendConfigurationSettings: BackendConfiguration;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private configurationConnector: any;
     private parameters: Map<string, string> = new Map<string, string>();
 
-    constructor(logger: Logger, configuredConnectors: string[]) {
+    constructor(logger: Logger, connectorFactory: ConnectorFactory) {
         this.logger = logger;
-        this.configuredConnectors = configuredConnectors;
+        this.connectorFactory = connectorFactory;
     }
 
     public parseCommandLineArguments(args: string[]): void {
@@ -40,13 +42,11 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         return this.backendConfigurationSettings;
     }
 
-    public selectedConnector(): string {
-        return this.parameters.get(SettingKey.CONNECTOR_NAME);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public connectorConfiguration(): any {
-        return this.configurationConnector;
+    public selectedConnector(): Connector {
+        return this.connectorFactory.initialize(
+            this.parameters.get(SettingKey.CONNECTOR_NAME),
+            this.configurationConnector
+        );
     }
 
     private parseConnectorName(args: string[]): void {
@@ -54,9 +54,9 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
             throw new Error("missing mandatory parameter connector name");
         }
         const connectorName = args[0];
-        if (!this.configuredConnectors.some(connector => connectorName === connector)) {
+        if (!this.connectorFactory.getAvailableConnectorNames().some(connector => connectorName === connector)) {
             let errorMessage: string = "unknown connector with name >>" + connectorName + "<<. Available are: ";
-            this.configuredConnectors.forEach(connector => errorMessage = errorMessage + connector + ",");
+            this.connectorFactory.getAvailableConnectorNames().forEach(connector => errorMessage = errorMessage + connector + ",");
             errorMessage = errorMessage.substr(0, errorMessage.length - 1) + ".";
             throw new Error(errorMessage);
         }
