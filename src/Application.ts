@@ -35,6 +35,7 @@ export class Application {
 
     private async reconcilitateDifferences(): Promise<void> {
         this.connector.reconcilitateStateModel(this.topic, this.domainModel.getDomainModel().stateModels, this.domainModel);
+        this.connector.reconcilitateProjects(this.topic, this.domainModel.getDomainModel(), this.domainModel);
 
         // block until all objects have been received
         while (this.backend.hasPendingRequests()) {
