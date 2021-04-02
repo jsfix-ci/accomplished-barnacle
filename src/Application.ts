@@ -21,7 +21,7 @@ export class Application {
         this.connector = this.settings.selectedConnector();
         await this.initializeBackend();
         await this.initializeDomainModel();
-        await this.reconcilitateDifferences();
+        this.reconcilitateDifferences();
         this.tearDown();
     }
 
@@ -30,7 +30,7 @@ export class Application {
         this.logger.debug('tore down.');
     }
 
-    private async reconcilitateDifferences(): Promise<void> {
+    private reconcilitateDifferences(): void {
         this.connector.reconcilitateStateModel(this.domainModel.getDomainModel().stateModels, this.domainModel);
     }
 
