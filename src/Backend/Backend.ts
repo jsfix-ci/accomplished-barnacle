@@ -2,7 +2,8 @@ import { Topic } from 'choicest-barnacle';
 import { Logger } from 'sitka';
 import { ITopicService } from './ITopicService';
 import { HttpClient } from './HttpClient';
-import { Client, EventSourceFactory } from 'prime-barnacle';
+import { Client } from 'prime-barnacle';
+import { EventSourceFactory } from './EventSourceFactory';
 
 type BackendConfiguration = {
     endpoint: string

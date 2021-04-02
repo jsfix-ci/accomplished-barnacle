@@ -20,6 +20,7 @@
     "@babel/core": "^7.13.14",
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-typescript": "^7.13.0",
+    "@types/eventsource": "^1.1.5",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.34",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
@@ -34,9 +35,10 @@
   },
   "dependencies": {
     "choicest-barnacle": "2.3.0",
+    "eventsource": "^1.1.0",
     "outstanding-barnacle": "^6.3.1",
     "prime-barnacle": "^2.3.1",
-    "sitka": "^1.0.5",
-    "rxjs": "^6.6.7"
+    "rxjs": "^6.6.7",
+    "sitka": "^1.0.5"
   }
 }
