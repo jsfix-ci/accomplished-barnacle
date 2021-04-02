@@ -1,24 +1,25 @@
 import { Logger } from 'sitka';
 import { Backend } from './Backend/Backend';
 import { ITopicService } from './Backend/ITopicService';
+import { Connector } from './Connectors/Connector';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
 
 export class Application {
     private logger: Logger;
     private backend: Backend;
     private topicService: ITopicService;
+    private connectors: Map<string, Connector>;
+    private current: Connector;
 
-    constructor(logger: Logger) {
+    constructor(connectors: Map<string, Connector>, logger: Logger) {
         this.logger = logger;
+        this.connectors = connectors;
+        this.current = this.connectors.get('trello');
     }
 
     public async run(): Promise<void> {
         await this.initialize();
         this.logger.info('started.');
-        this.logger.info('available topics: ');
-        this.topicService.getAvailableTopics().forEach(topic => {
-            this.logger.info('* ' + topic.name + ' (' + topic.id + ')');
-        })
         this.tearDown();
     }
 
