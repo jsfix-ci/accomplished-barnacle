@@ -7,13 +7,16 @@ export class DomainModel {
     private topic: Topic;
     private backend: Backend;
 
-    constructor(topic: Topic, backend: Backend) {
-        this.localProcessor = new ObjectEventCommandProcessor();
+    constructor(backend: Backend) {
         this.backend = backend;
-        backend.getObjectEvents().subscribe((objectEvent: ObjectEvent) => {
+    }
+
+    public async switchToTopic(topic: Topic): Promise<void> {
+        this.localProcessor = new ObjectEventCommandProcessor();
+        this.backend.getObjectEvents().subscribe((objectEvent: ObjectEvent) => {
             this.processLocalDomainModel(objectEvent);
         });
-        backend.switchToTopic(topic);
+        this.backend.switchToTopic(topic);
     }
 
     public getDomainModel(): HeijunkaBoard {

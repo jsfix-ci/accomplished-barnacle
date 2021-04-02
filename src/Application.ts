@@ -20,7 +20,7 @@ export class Application {
     public async run(): Promise<void> {
         this.connector = this.settings.selectedConnector();
         await this.initializeBackend();
-        this.initializeDomainModel();
+        await this.initializeDomainModel();
         this.tearDown();
     }
 
@@ -35,9 +35,10 @@ export class Application {
         this.logger.info('initialized backend');
     }
 
-    private initializeDomainModel() {
+    private async initializeDomainModel() {
         const topic = this.connector.selectTopic(this.backend as ITopicService);
-        this.domainModel = new DomainModel(topic, this.backend);
+        this.domainModel = new DomainModel(this.backend);
+        await this.domainModel.switchToTopic(topic);
         this.logger.info('initialized domain model');
     }
 }
