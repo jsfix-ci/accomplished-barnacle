@@ -1,10 +1,12 @@
 import { Logger } from 'sitka';
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
 import { ISettings, BackendConfiguration } from './ISettings';
+import { ConfigurationFileReader } from './ConfigurationFileReader';
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     private logger: Logger;
     private configuredConnectors: string[];
+    private backendConfigurationSettings: BackendConfiguration;
 
     constructor(logger: Logger, configuredConnectors: string[]) {
         this.logger = logger;
@@ -17,11 +19,13 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     }
 
     public backendConfiguration(): BackendConfiguration {
-        return { endpoint: 'asd' };
+        return this.backendConfigurationSettings;
     }
 
     private readBackendConfiguration(): void {
-        // TBD
+        const configurationFileReader = new ConfigurationFileReader(this.logger);
+        const defaultBackendConfigurationFile = './backend.json';
+        this.backendConfigurationSettings = configurationFileReader.read(defaultBackendConfigurationFile);
     }
 
 }

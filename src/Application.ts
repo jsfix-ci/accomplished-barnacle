@@ -2,7 +2,7 @@ import { Logger } from 'sitka';
 import { Backend } from './Backend/Backend';
 import { ITopicService } from './Backend/ITopicService';
 import { Connector } from './Connectors/Connector';
-import { ConfigurationFileReader } from './ConfigurationFileReader';
+import { ISettings } from './ISettings';
 
 export class Application {
     private logger: Logger;
@@ -10,11 +10,13 @@ export class Application {
     private topicService: ITopicService;
     private connectors: Map<string, Connector>;
     private current: Connector;
+    private settings: ISettings;
 
-    constructor(connectors: Map<string, Connector>, logger: Logger) {
+    constructor(connectors: Map<string, Connector>, settings: ISettings, logger: Logger) {
         this.logger = logger;
         this.connectors = connectors;
         this.current = this.connectors.get('trello');
+        this.settings = settings;
     }
 
     public async run(): Promise<void> {
@@ -29,11 +31,7 @@ export class Application {
     }
 
     private async initialize(): Promise<void> {
-        const configurationFileReader = new ConfigurationFileReader(this.logger);
-        const defaultBackendConfigurationFile = './backend.json';
-        const backendConfiguration = configurationFileReader.read(defaultBackendConfigurationFile);
-
-        this.backend = new Backend(backendConfiguration, this.logger);
+        this.backend = new Backend(this.settings.backendConfiguration(), this.logger);
         this.topicService = this.backend;
         await this.backend.connect();
         this.logger.info('initialized.');

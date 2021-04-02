@@ -21,5 +21,5 @@ availableConnectors.forEach((_value, key) => namesOfAvailableConnectors.push(key
 const settings = new Settings(logger, namesOfAvailableConnectors);
 settings.parseCommandLineArguments(process.argv);
 
-const application = new Application(availableConnectors, logger);
+const application = new Application(availableConnectors, settings, logger);
 application.run();
