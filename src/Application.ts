@@ -21,24 +21,29 @@ export class Application {
         this.connector = this.settings.selectedConnector();
         await this.initializeBackend();
         await this.initializeDomainModel();
+        await this.reconcilitateDifferences();
         this.tearDown();
     }
 
     private tearDown(): void {
         this.backend.disconnect();
-        this.logger.info('tore down.');
+        this.logger.debug('tore down.');
+    }
+
+    private async reconcilitateDifferences(): Promise<void> {
+        // tbd
     }
 
     private async initializeBackend(): Promise<void> {
         this.backend = new Backend(this.settings.backendConfiguration(), this.logger);
         await this.backend.connect();
-        this.logger.info('initialized backend');
+        this.logger.debug('initialized backend');
     }
 
     private async initializeDomainModel() {
         const topic = this.connector.selectTopic(this.backend as ITopicService);
         this.domainModel = new DomainModel(this.backend);
         await this.domainModel.switchToTopic(topic);
-        this.logger.info('initialized domain model');
+        this.logger.debug('initialized domain model');
     }
 }

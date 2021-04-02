@@ -14,12 +14,12 @@ export class HttpClient implements IHTTPClient {
     }
 
     postJson(clientUrl: string, json: ObjectEventREST): void {
-        this.logger.info('POST Json' + clientUrl + ' ' + json);
+        this.logger.debug('POST Json' + clientUrl + ' ' + json);
         throw new Error('Method not implemented.');
     }
 
     get(clientUrl: string): Observable<ObjectEventREST> {
-        this.logger.info('GET ' + clientUrl);
+        this.logger.debug('GET ' + clientUrl);
         const urlObject = new url.URL(clientUrl);
 
         return new Observable<ObjectEventREST>(subscriber => {

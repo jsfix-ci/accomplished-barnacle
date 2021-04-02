@@ -20,7 +20,7 @@ export class Backend implements ITopicService {
     }
 
     public async connect(): Promise<void> {
-        this.logger.info('connecting with backend at ' + this.configuration.endpoint);
+        this.logger.debug('connecting with backend at ' + this.configuration.endpoint);
         this.client = new Client(this.configuration.endpoint, new EventSourceFactory(), new HttpClient(this.logger));
         this.connectWithTopics();
 
@@ -43,7 +43,7 @@ export class Backend implements ITopicService {
     }
 
     public disconnect(): void {
-        this.logger.info('disconnecting from backend at ' + this.configuration.endpoint);
+        this.logger.debug('disconnecting from backend at ' + this.configuration.endpoint);
         this.disconnectWithTopics();
     }
 
