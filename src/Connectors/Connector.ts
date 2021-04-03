@@ -5,6 +5,7 @@ import { ITopicService } from "../Backend/ITopicService";
 import { Configuration } from "./Configuration"
 import { StateModelDifferencesService } from './StateModelDifferencesService'
 import { ProjectDifferencesService } from './ProjectDifferencesService'
+import { Logger } from "sitka";
 
 export abstract class Connector {
     private _configuration: Configuration = undefined;
@@ -27,18 +28,18 @@ export abstract class Connector {
         this._configuration.read(configuration);
     }
 
-    public reconciliateStateModel(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor): void {
+    public reconciliateStateModel(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
         if (this._stateModelDifferencesService === undefined) {
             return;
         }
-        this._stateModelDifferencesService.reconciliate(topic, stateModels, objectEventProcessor);
+        this._stateModelDifferencesService.reconciliate(topic, stateModels, objectEventProcessor, logger);
     }
 
-    public reconciliateProjects(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor): void {
+    public reconciliateProjects(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
         if (this._projectDifferencesService === undefined) {
             return;
         }
-        this._projectDifferencesService.reconciliate(topic, board, objectEventProcessor);
+        this._projectDifferencesService.reconciliate(topic, board, objectEventProcessor, logger);
     }
 
     protected setConfiguration(configuration: Configuration): void {

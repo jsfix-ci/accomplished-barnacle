@@ -1,4 +1,5 @@
 import { Topic } from "choicest-barnacle";
+import { Logger } from 'sitka';
 import { State, StateModel, StateModelCollection, StateModelEventFactory, UUIDGenerator } from "outstanding-barnacle";
 import { IObjectEventProcessor } from "../../IObjectEventProcessor";
 import { StateModelDifferencesService } from "../StateModelDifferencesService";
@@ -13,12 +14,13 @@ export class TrelloStateModelDifferencesService extends StateModelDifferencesSer
         this.configuration = configuration;
     }
 
-    reconciliate(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor): void {
+    reconciliate(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
         const alreadyDefined = (stateModels.getStateModels().find(stateModel => stateModel.name === this.stateModelName)) !== undefined;
         if (alreadyDefined) {
             return;
         }
 
+        logger.info('create state model');
         const objectEvent = new StateModelEventFactory().create(topic, this.generateStateModel());
         objectEventProcessor.process(objectEvent);
     }
