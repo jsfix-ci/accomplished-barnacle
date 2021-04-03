@@ -5,6 +5,7 @@ import { HttpClient } from './HttpClient';
 import { Client } from 'prime-barnacle';
 import { EventSourceFactory } from './EventSourceFactory';
 import { Observable, Subscription } from 'rxjs';
+import { ConfigurationFileReader } from '../CommandLine/ConfigurationFileReader';
 
 type BackendConfiguration = {
     endpoint: string
@@ -17,9 +18,10 @@ export class Backend implements ITopicService {
     private topics: Topic[] = [];
     private newTopicStream: Subscription = undefined;
 
-    constructor(configuration: BackendConfiguration, logger: Logger) {
+    constructor(backendConfigurationFile: string, logger: Logger) {
+        const configurationFileReader = new ConfigurationFileReader(this.logger);
+        this.configuration = configurationFileReader.read(backendConfigurationFile);
         this.logger = logger;
-        this.configuration = configuration;
     }
 
     public connect(): void {
