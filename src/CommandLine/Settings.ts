@@ -4,6 +4,9 @@ import { ISettings, BackendConfiguration } from './ISettings';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
 import { Connector } from '../Connectors/Connector';
 import { ConnectorFactory } from '../Connectors/ConnectorFactory';
+import { CommandLineParameter } from './CommandLineParameter';
+import { FileNameParameter } from './FileNameParameter';
+import { StringParameter } from './StringParameter';
 
 enum SettingKey {
     BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',
@@ -15,6 +18,7 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     private logger: Logger;
     private connectorFactory: ConnectorFactory;
     private backendConfigurationSettings: BackendConfiguration;
+    private cliParameters: CommandLineParameter<unknown>[] = [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private configurationConnector: any;
     private parameters: Map<string, string> = new Map<string, string>();
@@ -22,6 +26,10 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     constructor(logger: Logger, connectorFactory: ConnectorFactory) {
         this.logger = logger;
         this.connectorFactory = connectorFactory;
+
+        this.cliParameters.push(new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
+        this.cliParameters.push(new FileNameParameter(logger, 'connector-config', 'connector configuration file', true));
+        this.cliParameters.push(new StringParameter(logger, 'connector', 'connector name', true));
     }
 
     public parseCommandLineArguments(args: string[]): void {
@@ -91,6 +99,12 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     }
 
     private printHelp(): void {
-        console.log("usage: <connectorname> <json file with connector settings> <optional: json file with backend connecting (defaults to backend.json)>")
+        console.log("usage: ");
+        this.cliParameters.forEach(aParameter => {
+            let description = aParameter.key;
+            description = description + ' ' + (aParameter.isMandatory ? '(mandatory)' : '(optional)');
+            description = description + ':' + (aParameter.description);
+            console.log(" " + description)
+        })
     }
 }

@@ -10,7 +10,7 @@ export abstract class CommandLineParameter<T> {
 
     constructor(logger: Logger, key: string, description: string, isMandatory: boolean) {
         this._logger = logger;
-        this.key = key;
+        this.key = "--" + key;
         this.description = description;
         this.isMandatory = isMandatory;
     }
