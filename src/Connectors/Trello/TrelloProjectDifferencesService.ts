@@ -5,7 +5,7 @@ import { TrelloConfiguration, TrelloBoardResponse } from "./TrelloConfiguration"
 import { DifferencesService } from "../DifferencesService";
 import { HttpClient } from "../../Backend/HttpClient";
 import { Observable, from } from "rxjs";
-import { map, mergeAll, mergeMap } from 'rxjs/operators';
+import { map, mergeAll } from 'rxjs/operators';
 
 export class TrelloProjectDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;

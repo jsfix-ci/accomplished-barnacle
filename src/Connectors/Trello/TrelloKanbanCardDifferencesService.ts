@@ -1,9 +1,9 @@
-import { Topic } from "choicest-barnacle";
+import { Topic, ObjectEvent } from "choicest-barnacle";
 import { Logger } from 'sitka';
-import { HeijunkaBoard, ProjectEventFactory } from "outstanding-barnacle";
-import { IObjectEventProcessor } from "../../IObjectEventProcessor";
+import { HeijunkaBoard } from "outstanding-barnacle";
 import { TrelloConfiguration } from "./TrelloConfiguration";
 import { DifferencesService } from "../DifferencesService";
+import { Observable } from "rxjs";
 
 export class TrelloKanbanCardDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;
@@ -13,16 +13,9 @@ export class TrelloKanbanCardDifferencesService extends DifferencesService {
         this.configuration = configuration;
     }
 
-    public reconciliate(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
-        /*const aProjectIsAlreadyDefined = board.projects.getProjects().length > 0;
-        if (aProjectIsAlreadyDefined) {
-            return;
-        }
-        const projectName = this.configuration.board();
-        const stateModel = board.stateModels.getStateModels()[0];
-        const objectEvents = new ProjectEventFactory().create(topic, projectName, stateModel);
-
-        logger.info('create project ' + projectName);
-        objectEventProcessor.process(objectEvents);*/
+    public reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
+        return new Observable(subscriber => {
+            subscriber.complete();
+        });
     }
 }
