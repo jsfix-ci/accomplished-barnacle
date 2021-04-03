@@ -1,4 +1,6 @@
 import http from 'http';
+import https from 'https';
+
 import url from 'url';
 
 import { Logger } from 'sitka';
@@ -7,10 +9,19 @@ import { Observable } from 'rxjs';
 import { ObjectEventREST } from 'choicest-barnacle';
 
 export class HttpClient implements IHTTPClient {
-    private logger: Logger;
+    private readonly logger: Logger;
+    private readonly getHttp;
+    private readonly requestHttp;
 
-    constructor(logger: Logger) {
+    constructor(logger: Logger, isHttps = true) {
         this.logger = logger;
+        if (isHttps) {
+            this.getHttp = https.get;
+            this.requestHttp = https.request;
+        } else {
+            this.getHttp = http.get;
+            this.requestHttp = http.request;
+        }
     }
 
     postJson(clientUrl: string, json: ObjectEventREST): void {
@@ -28,8 +39,7 @@ export class HttpClient implements IHTTPClient {
                     'Content-Length': asString.length
                 }
             }
-
-            const req = http.request(options);
+            const req = this.requestHttp(options);
 
             req.write(asString);
             req.end();
@@ -41,9 +51,8 @@ export class HttpClient implements IHTTPClient {
     get(clientUrl: string): Observable<ObjectEventREST> {
         this.logger.debug('GET ' + clientUrl);
         const urlObject = new url.URL(clientUrl);
-
         return new Observable<ObjectEventREST>(subscriber => {
-            http.get(urlObject,
+            this.getHttp(urlObject,
                 (res) => {
                     const statusCode = res.statusCode;
                     if (statusCode !== 200) {
