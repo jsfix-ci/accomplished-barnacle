@@ -29,9 +29,17 @@ export class DomainModel implements IObjectEventProcessor {
         return this.localProcessor.getHeijunkaBoard();
     }
 
-    public process(objectEvent: ObjectEvent): void {
-        this.processLocalDomainModel(objectEvent);
-        this.saveInBackend(objectEvent);
+    public process(objectEvent: ObjectEvent | ObjectEvent[]): void {
+        let events: ObjectEvent[] = [];
+        if (objectEvent instanceof ObjectEvent) {
+            events.push(objectEvent);
+        } else {
+            events = objectEvent;
+        }
+        events.forEach(anEvent => {
+            this.processLocalDomainModel(anEvent);
+            this.saveInBackend(anEvent);
+        })
     }
 
     private processLocalDomainModel(objectEvent: ObjectEvent): void {

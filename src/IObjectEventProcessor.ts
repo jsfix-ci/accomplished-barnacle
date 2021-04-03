@@ -1,5 +1,5 @@
 import { ObjectEvent } from "choicest-barnacle";
 
 export interface IObjectEventProcessor {
-    process(objectEvent: ObjectEvent): void;
+    process(objectEvent: ObjectEvent | ObjectEvent[]): void;
 }
