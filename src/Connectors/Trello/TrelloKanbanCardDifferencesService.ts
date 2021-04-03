@@ -1,9 +1,11 @@
 import { Topic, ObjectEvent } from "choicest-barnacle";
 import { Logger } from 'sitka';
 import { HeijunkaBoard } from "outstanding-barnacle";
-import { TrelloConfiguration } from "./TrelloConfiguration";
+import { TrelloConfiguration, TrelloCardResponse } from "./TrelloConfiguration";
 import { DifferencesService } from "../DifferencesService";
-import { Observable } from "rxjs";
+import { HttpClient } from "../../Backend/HttpClient";
+import { Observable, from } from "rxjs";
+import { map, mergeAll, take } from 'rxjs/operators';
 
 export class TrelloKanbanCardDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;
@@ -14,8 +16,21 @@ export class TrelloKanbanCardDifferencesService extends DifferencesService {
     }
 
     public reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
-        return new Observable(subscriber => {
-            subscriber.complete();
-        });
+        const httpClient = new HttpClient(logger, true);
+
+        return httpClient.get(this.configuration.cardURL()).pipe(map<TrelloCardResponse, string>(
+            (value: TrelloCardResponse) => {
+                console.log(value);
+                return value.id;
+            }),
+            take(3),
+            map<string, Observable<ObjectEvent>>(
+                (id: string) => {
+                    console.log(this.configuration.actionsOfCardURL(id));
+                    return from([])
+                }
+            ),
+            mergeAll<ObjectEvent>()
+        );
     }
 }

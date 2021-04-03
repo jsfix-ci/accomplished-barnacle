@@ -19,6 +19,16 @@ export type TrelloBoardResponse = {
     name: string
 }
 
+export type TrelloCardResponse = {
+    name: string,
+    id: string
+}
+
+export type TrelloActionResponse = {
+    name: string,
+    id: string
+}
+
 export class TrelloConfiguration extends Configuration {
     private _applicationKey: string;
     private _board: string;
@@ -55,7 +65,22 @@ export class TrelloConfiguration extends Configuration {
     }
 
     public boardURL(): string {
-        return 'https://api.trello.com/1/boards/' + this._board + '?key=' + this._applicationKey + '&token=' + this._token;
+        return 'https://api.trello.com/1/boards/' + this._board + '?' + this.keyAndTokenSuffixOfUrl();
+    }
+
+    public cardURL(): string {
+        const fields = 'fields=name,id';
+        return 'https://api.trello.com/1/boards/' + this._board + '/cards?' + fields + '&' + this.keyAndTokenSuffixOfUrl();
+    }
+
+    public actionsOfCardURL(cardId: string): string {
+        const filter = 'filter=updateCard:idList,createCard';
+        const fields = 'fields=data,date,type';
+        return 'https://api.trello.com/1/cards/' + cardId + '/actions?' + filter + '&' + fields + '&' + this.keyAndTokenSuffixOfUrl();
+    }
+
+    private keyAndTokenSuffixOfUrl(): string {
+        return 'key=' + this._applicationKey + '&token=' + this._token;
     }
 
     public topic(): string {
