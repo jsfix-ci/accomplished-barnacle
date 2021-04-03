@@ -7,6 +7,7 @@ import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './Connectors/DomainDifferences';
 import { ConfigurationFileReader } from './CommandLine/ConfigurationFileReader';
+import { ConnectorFactory } from './Connectors/ConnectorFactory';
 
 export class Application {
     private logger: Logger;
@@ -15,14 +16,16 @@ export class Application {
     private settings: ISettings;
     private domainModel: DomainModel;
     private topic: Topic;
+    private connectorFactory: ConnectorFactory;
 
-    constructor(settings: ISettings, logger: Logger) {
+    constructor(settings: ISettings, connectorFactory: ConnectorFactory, logger: Logger) {
         this.logger = logger;
         this.settings = settings;
+        this.connectorFactory = connectorFactory;
     }
 
     public async run(): Promise<void> {
-        this.connector = this.settings.selectedConnector();
+        this.initializeConnector();
         await this.initializeBackend();
         await this.initializeDomainModel();
 
@@ -58,5 +61,11 @@ export class Application {
         this.domainModel = new DomainModel(this.backend);
         await this.domainModel.switchToTopic(this.topic);
         this.logger.debug('initialized domain model');
+    }
+
+    private initializeConnector() {
+        const configurationFileReader = new ConfigurationFileReader(this.logger);
+        const configurationConnector = configurationFileReader.read(this.settings.valueOf(SettingKey.CONNECTOR_FILE));
+        this.connector = this.connectorFactory.initialize(this.settings.valueOf(SettingKey.CONNECTOR_NAME), configurationConnector);
     }
 }
