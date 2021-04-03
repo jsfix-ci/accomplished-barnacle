@@ -19,7 +19,10 @@ export class TrelloKanbanCardDifferencesService extends DifferencesService {
 
     public reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
         const httpClient = new HttpClient(logger, true);
-        const kanbanCardsOnTrelloBoard = new FetchKanbanCardsFromTrelloService().fetch(httpClient, this.configuration).pipe(take(3));
+        const allCards = board.kanbanCards.getKanbanCards();
+        const kanbanCardsOnTrelloBoard = new FetchKanbanCardsFromTrelloService().fetch(httpClient, this.configuration).pipe(take(10));
+
+
         kanbanCardsOnTrelloBoard.subscribe({
             next(kanbanCard: TrelloKanbanCard) {
                 console.log(kanbanCard.toString());

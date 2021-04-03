@@ -4,7 +4,6 @@ import { Observable, of } from "rxjs";
 import { map, mergeAll, reduce, concatMap } from 'rxjs/operators';
 import { TrelloKanbanCard } from './TrelloKanbanCard';
 
-
 type TrelloCardResponse = {
     name: string,
     id: string
@@ -31,8 +30,9 @@ export class FetchKanbanCardsFromTrelloService {
             (value: TrelloCardResponse) => {
                 return new TrelloKanbanCard(value.name, value.id);
             }),
+            // wait for 0.1 seconds, as this is the rate limit imposed by Trello
             concatMap(value => {
-                // return a promise that resolves with the specified value after 0.1 seconds
+
                 return new Promise(resolve => setTimeout(() => resolve(value), 100));
             }),
             concatMap(value => {
