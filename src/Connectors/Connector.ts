@@ -27,14 +27,14 @@ export abstract class Connector {
         this._configuration.read(configuration);
     }
 
-    public reconcilitateStateModel(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor): void {
+    public reconciliateStateModel(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor): void {
         if (this._stateModelDifferencesService === undefined) {
             return;
         }
         this._stateModelDifferencesService.reconciliate(topic, stateModels, objectEventProcessor);
     }
 
-    public reconcilitateProjects(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor): void {
+    public reconciliateProjects(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor): void {
         if (this._projectDifferencesService === undefined) {
             return;
         }
