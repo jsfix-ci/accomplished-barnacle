@@ -19,10 +19,7 @@ export class DomainModel implements IObjectEventProcessor {
             this.processLocalDomainModel(objectEvent);
         });
         this.backend.switchToTopic(topic);
-        // block until all objects have been received
-        while (this.backend.hasPendingRequests()) {
-            await new Promise(r => setTimeout(r, 100));
-        }
+        await this.backend.blockUntilBackendHasProcessedRequests();
     }
 
     public getDomainModel(): HeijunkaBoard {

@@ -36,16 +36,13 @@ export class Application {
     private async reconcilitateDifferences(): Promise<void> {
         this.connector.reconcilitateStateModel(this.topic, this.domainModel.getDomainModel().stateModels, this.domainModel);
         this.connector.reconcilitateProjects(this.topic, this.domainModel.getDomainModel(), this.domainModel);
-
-        // block until all objects have been received
-        while (this.backend.hasPendingRequests()) {
-            await new Promise(r => setTimeout(r, 100));
-        }
+        await this.backend.blockUntilBackendHasProcessedRequests();
     }
 
     private async initializeBackend(): Promise<void> {
         this.backend = new Backend(this.settings.backendConfiguration(), this.logger);
-        await this.backend.connect();
+        this.backend.connect();
+        await this.backend.blockUntilBackendHasProcessedRequests();
         this.logger.debug('initialized backend');
     }
 
