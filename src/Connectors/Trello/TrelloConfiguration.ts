@@ -26,7 +26,17 @@ export type TrelloCardResponse = {
 
 export type TrelloActionResponse = {
     name: string,
-    id: string
+    id: string,
+    date: string,
+    type: string,
+    data: {
+        list: {
+            id: string,
+            name: string
+        }
+        listBefore: { id: string, name: string },
+        listAfter: { id: string, name: string }
+    }
 }
 
 export class TrelloConfiguration extends Configuration {
