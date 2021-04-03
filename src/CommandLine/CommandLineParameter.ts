@@ -1,15 +1,10 @@
-import { Logger } from 'sitka';
-
 export abstract class CommandLineParameter<T> {
     public readonly key: string;
     public readonly description: string;
     public readonly isMandatory: boolean;
     protected _value: T = undefined;
 
-    private readonly _logger: Logger;
-
-    constructor(logger: Logger, key: string, description: string, isMandatory: boolean) {
-        this._logger = logger;
+    constructor(key: string, description: string, isMandatory: boolean) {
         this.key = "--" + key;
         this.description = description;
         this.isMandatory = isMandatory;

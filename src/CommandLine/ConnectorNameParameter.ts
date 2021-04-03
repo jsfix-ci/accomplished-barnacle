@@ -1,11 +1,10 @@
-import { Logger } from 'sitka';
 import { CommandLineParameter } from './CommandLineParameter';
 import { ConnectorFactory } from '../Connectors/ConnectorFactory';
 
 export class ConnectorNameParameter extends CommandLineParameter<string> {
     private connectorFactory: ConnectorFactory;
-    constructor(logger: Logger, key: string, description: string, isMandatory: boolean, connectorFactory: ConnectorFactory) {
-        super(logger, key, description, isMandatory);
+    constructor(key: string, description: string, isMandatory: boolean, connectorFactory: ConnectorFactory) {
+        super(key, description, isMandatory);
         this.connectorFactory = connectorFactory;
     }
 
