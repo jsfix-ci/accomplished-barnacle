@@ -1,21 +1,14 @@
-import { Logger } from 'sitka';
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
 import { ISettings, SettingKey } from './ISettings';
-import { ConnectorFactory } from '../Connectors/ConnectorFactory';
 import { CommandLineParameter } from './CommandLineParameter';
-import { FileNameParameter } from './FileNameParameter';
-import { LogLevelParameter } from './LogLevelParameter';
-import { ConnectorNameParameter } from './ConnectorNameParameter';
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private cliParameters: Map<SettingKey, CommandLineParameter<any>> = new Map<SettingKey, CommandLineParameter<any>>();
 
-    constructor(logger: Logger, connectorFactory: ConnectorFactory) {
-        this.cliParameters.set(SettingKey.CONNECTOR_NAME, new ConnectorNameParameter(logger, 'connector', 'connector name', true, connectorFactory));
-        this.cliParameters.set(SettingKey.CONNECTOR_FILE, new FileNameParameter(logger, 'connector-config', 'connector configuration file', false));
-        this.cliParameters.set(SettingKey.BACKEND_CONFIGURATION_FILE, new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
-        this.cliParameters.set(SettingKey.LOG_LEVEL, new LogLevelParameter(logger, 'log-level', 'level of log', false));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public add(settingKey: SettingKey, parameter: CommandLineParameter<any>): void {
+        this.cliParameters.set(settingKey, parameter);
     }
 
     public parseCommandLineArguments(args: string[]): boolean {

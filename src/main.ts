@@ -1,6 +1,6 @@
 import { Logger } from 'sitka';
 import { Application } from './Application';
-import { Settings } from './CommandLine/Settings';
+import { SettingsFactory } from './CommandLine/SettingsFactory';
 
 import { ConnectorFactory } from './Connectors/ConnectorFactory';
 
@@ -11,9 +11,10 @@ const loggerConfig: any = {
 };
 const logger = Logger.getLogger(loggerConfig);
 
+const connectorFactory = new ConnectorFactory();
+const settings = SettingsFactory.generate(logger, connectorFactory);
+
 try {
-    const connectorFactory = new ConnectorFactory();
-    const settings = new Settings(logger, connectorFactory);
     const noProblems = settings.parseCommandLineArguments(process.argv);
     if (noProblems) {
         const application = new Application(settings, connectorFactory, logger);
