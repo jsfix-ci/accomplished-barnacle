@@ -11,11 +11,6 @@ import { DomainDifferences } from './DomainDifferences';
 export abstract class Connector {
     private _configuration: Configuration = undefined;
     private _differenceServices: Map<DomainDifferences, DifferencesService> = new Map<DomainDifferences, DifferencesService>();
-    public readonly name: string;
-
-    constructor(name: string) {
-        this.name = name;
-    }
 
     abstract selectTopic(topicService: ITopicService): Topic;
 

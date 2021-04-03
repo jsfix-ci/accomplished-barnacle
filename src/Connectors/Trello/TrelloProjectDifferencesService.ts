@@ -15,6 +15,7 @@ export class TrelloProjectDifferencesService extends DifferencesService {
 
     public reconciliate(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
         const aProjectIsAlreadyDefined = board.projects.getProjects().length > 0;
+        console.log(this.configuration.boardURL());
         if (aProjectIsAlreadyDefined) {
             return;
         }

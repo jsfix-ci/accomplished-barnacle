@@ -4,28 +4,33 @@ import { ConfigurationFileReader } from '../CommandLine/ConfigurationFileReader'
 import { Logger } from "sitka";
 
 export class ConnectorFactory {
-    private availableConnectors: Connector[] = [];
+    private availableConnectors: string[] = [];
 
     constructor() {
-        this.availableConnectors.push(new TrelloConnector());
+        this.availableConnectors.push(TrelloConnector.connectorName);
     }
 
     public getAvailableConnectorNames(): string[] {
-        const result: string[] = [];
-        this.availableConnectors.forEach(connector => result.push(connector.name));
-        return result;
+        return this.availableConnectors;
     }
 
     public initialize(connectorName: string, connectorConfigurationFile: string, logger: Logger): Connector {
-        const connector: Connector | undefined = this.availableConnectors.find(aConnector => aConnector.name === connectorName);
-        if (connector === undefined) {
-            throw new Error("unknown connector name " + connectorName);
-        }
+        const connector = this.instantiateConnector(connectorName, logger);
+
         if (connectorConfigurationFile !== undefined) {
             const configurationFileReader = new ConfigurationFileReader(logger);
             const configurationConnector = configurationFileReader.read(connectorConfigurationFile);
             connector.readConfiguration(configurationConnector);
         }
         return connector;
+    }
+
+    private instantiateConnector(connectorName: string, logger: Logger): Connector {
+        if (!this.availableConnectors.some(aConnectorName => aConnectorName === connectorName)) {
+            throw new Error("unknown connector name " + connectorName);
+        }
+        if (connectorName === TrelloConnector.connectorName) {
+            return new TrelloConnector(logger);
+        }
     }
 }
