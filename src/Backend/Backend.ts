@@ -6,11 +6,9 @@ import { Client } from 'prime-barnacle';
 import { EventSourceFactory } from './EventSourceFactory';
 import { Observable, Subscription } from 'rxjs';
 
-
 type BackendConfiguration = {
     endpoint: string
 };
-
 
 export class Backend implements ITopicService {
     private logger: Logger;
