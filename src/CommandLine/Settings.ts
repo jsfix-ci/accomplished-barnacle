@@ -7,7 +7,7 @@ import { ConnectorFactory } from '../Connectors/ConnectorFactory';
 import { CommandLineParameter } from './CommandLineParameter';
 import { FileNameParameter } from './FileNameParameter';
 import { StringParameter } from './StringParameter';
-
+import { LogLevelParameter } from './LogLevelParameter';
 enum SettingKey {
     BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',
     CONNECTOR_NAME = 'CONNECTOR_NAME',
@@ -27,9 +27,10 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         this.logger = logger;
         this.connectorFactory = connectorFactory;
 
-        this.cliParameters.push(new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
-        this.cliParameters.push(new FileNameParameter(logger, 'connector-config', 'connector configuration file', true));
         this.cliParameters.push(new StringParameter(logger, 'connector', 'connector name', true));
+        this.cliParameters.push(new FileNameParameter(logger, 'connector-config', 'connector configuration file', true));
+        this.cliParameters.push(new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
+        this.cliParameters.push(new LogLevelParameter(logger, 'log-level', 'level of log', false));
     }
 
     public parseCommandLineArguments(args: string[]): void {
