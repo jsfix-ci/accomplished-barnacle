@@ -6,14 +6,13 @@ import { TrelloStateModelDifferencesService } from "./TrelloStateModelDifference
 import { TrelloProjectDifferencesService } from "./TrelloProjectDifferencesService";
 import { DomainDifferences } from "../DomainDifferences";
 import { TrelloKanbanCardDifferencesService } from "./TrelloKanbanCardDifferencesService";
-import { Logger } from "sitka";
 
 export class TrelloConnector extends Connector {
     public static readonly connectorName = 'trello';
 
     private configuration = new TrelloConfiguration();
 
-    constructor(logger: Logger) {
+    constructor() {
         super();
         this.setConfiguration(this.configuration);
         this.setDifferencesService(DomainDifferences.STATE_MODEL, new TrelloStateModelDifferencesService(this.configuration));

@@ -48,10 +48,12 @@ export class HttpClient implements IHTTPClient {
         }
     }
 
-    get(clientUrl: string): Observable<ObjectEventREST> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get(clientUrl: string): Observable<any> {
         this.logger.debug('GET ' + clientUrl);
         const urlObject = new url.URL(clientUrl);
-        return new Observable<ObjectEventREST>(subscriber => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new Observable<any>(subscriber => {
             this.getHttp(urlObject,
                 (res) => {
                     const statusCode = res.statusCode;
@@ -69,12 +71,15 @@ export class HttpClient implements IHTTPClient {
                         try {
                             const parsedData = JSON.parse(rawData);
                             rawData = '';
-
-                            parsedData.map((aObject: ObjectEventREST) => subscriber.next(aObject));
+                            if (parsedData instanceof Array) {
+                                parsedData.map((aObject: ObjectEventREST) => subscriber.next(aObject));
+                            } else {
+                                subscriber.next(parsedData);
+                            }
                             subscriber.complete();
 
                         } catch (e) {
-                            subscriber.error(statusCode);
+                            subscriber.error(e.message);
                         }
                     });
                 }).on('error', (e) => {

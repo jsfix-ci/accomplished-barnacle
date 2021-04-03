@@ -15,6 +15,10 @@ type TrelloJsonConfiguration = {
     stateModel: StateModel
 }
 
+export type TrelloBoardResponse = {
+    name: string
+}
+
 export class TrelloConfiguration extends Configuration {
     private _applicationKey: string;
     private _board: string;

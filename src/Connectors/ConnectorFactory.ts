@@ -15,7 +15,7 @@ export class ConnectorFactory {
     }
 
     public initialize(connectorName: string, connectorConfigurationFile: string, logger: Logger): Connector {
-        const connector = this.instantiateConnector(connectorName, logger);
+        const connector = this.instantiateConnector(connectorName);
 
         if (connectorConfigurationFile !== undefined) {
             const configurationFileReader = new ConfigurationFileReader(logger);
@@ -25,12 +25,12 @@ export class ConnectorFactory {
         return connector;
     }
 
-    private instantiateConnector(connectorName: string, logger: Logger): Connector {
+    private instantiateConnector(connectorName: string): Connector {
         if (!this.availableConnectors.some(aConnectorName => aConnectorName === connectorName)) {
             throw new Error("unknown connector name " + connectorName);
         }
         if (connectorName === TrelloConnector.connectorName) {
-            return new TrelloConnector(logger);
+            return new TrelloConnector();
         }
     }
 }
