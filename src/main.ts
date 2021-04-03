@@ -12,10 +12,11 @@ const loggerConfig: any = {
 const logger = Logger.getLogger(loggerConfig);
 
 try {
-    const settings = new Settings(logger, new ConnectorFactory());
+    const connectorFactory = new ConnectorFactory();
+    const settings = new Settings(logger, connectorFactory);
     const noProblems = settings.parseCommandLineArguments(process.argv);
     if (noProblems) {
-        const application = new Application(settings, logger);
+        const application = new Application(settings, connectorFactory, logger);
         application.run();
     }
 
