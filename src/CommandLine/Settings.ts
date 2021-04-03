@@ -19,11 +19,8 @@ enum SettingKey {
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     private logger: Logger;
     private connectorFactory: ConnectorFactory;
-    private backendConfigurationSettings: BackendConfiguration;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private cliParameters: Map<SettingKey, CommandLineParameter<any>> = new Map<SettingKey, CommandLineParameter<any>>();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private configurationConnector: any;
 
     constructor(logger: Logger, connectorFactory: ConnectorFactory) {
         this.logger = logger;
@@ -47,8 +44,6 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
             this.printHelp();
             return false;
         }
-        this.readConnectorConfiguration();
-        this.readBackendConfiguration();
         return true;
     }
 
@@ -75,24 +70,18 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     }
 
     public backendConfiguration(): BackendConfiguration {
-        return this.backendConfigurationSettings;
+        const configurationFileReader = new ConfigurationFileReader(this.logger);
+        const backendConfigurationSettings = configurationFileReader.read(this.cliParameters.get(SettingKey.BACKEND_CONFIGURATION_FILE).getValue());
+        return backendConfigurationSettings;
     }
 
     public selectedConnector(): Connector {
+        const configurationFileReader = new ConfigurationFileReader(this.logger);
+        const configurationConnector = configurationFileReader.read(this.cliParameters.get(SettingKey.CONNECTOR_FILE).getValue());
         return this.connectorFactory.initialize(
             this.cliParameters.get(SettingKey.CONNECTOR_NAME).getValue(),
-            this.configurationConnector
+            configurationConnector
         );
-    }
-
-    private readBackendConfiguration(): void {
-        const configurationFileReader = new ConfigurationFileReader(this.logger);
-        this.backendConfigurationSettings = configurationFileReader.read(this.cliParameters.get(SettingKey.BACKEND_CONFIGURATION_FILE).getValue());
-    }
-
-    private readConnectorConfiguration(): void {
-        const configurationFileReader = new ConfigurationFileReader(this.logger);
-        this.configurationConnector = configurationFileReader.read(this.cliParameters.get(SettingKey.CONNECTOR_FILE).getValue());
     }
 
     private printHelp(): void {
