@@ -50,16 +50,8 @@ export class TrelloConfiguration extends Configuration {
         this.validateStateModel(configuration.stateModel);
     }
 
-    public applicationKey(): string {
-        return this._applicationKey;
-    }
-
-    public board(): string {
-        return this._board;
-    }
-
-    public token(): string {
-        return this._token;
+    public boardURL(): string {
+        return 'https://api.trello.com/1/boards/' + this._board + '?key=' + this._applicationKey + '&token=' + this._token;
     }
 
     public topic(): string {

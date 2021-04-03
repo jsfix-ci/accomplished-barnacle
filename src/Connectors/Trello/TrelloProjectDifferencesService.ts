@@ -18,7 +18,7 @@ export class TrelloProjectDifferencesService extends DifferencesService {
         if (aProjectIsAlreadyDefined) {
             return;
         }
-        const projectName = this.configuration.board();
+        const projectName = 'project';
         const stateModel = board.stateModels.getStateModels()[0];
         const objectEvents = new ProjectEventFactory().create(topic, projectName, stateModel);
 
