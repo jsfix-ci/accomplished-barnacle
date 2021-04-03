@@ -13,7 +13,7 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
 
     constructor(logger: Logger, connectorFactory: ConnectorFactory) {
         this.cliParameters.set(SettingKey.CONNECTOR_NAME, new ConnectorNameParameter(logger, 'connector', 'connector name', true, connectorFactory));
-        this.cliParameters.set(SettingKey.CONNECTOR_FILE, new FileNameParameter(logger, 'connector-config', 'connector configuration file', true));
+        this.cliParameters.set(SettingKey.CONNECTOR_FILE, new FileNameParameter(logger, 'connector-config', 'connector configuration file', false));
         this.cliParameters.set(SettingKey.BACKEND_CONFIGURATION_FILE, new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
         this.cliParameters.set(SettingKey.LOG_LEVEL, new LogLevelParameter(logger, 'log-level', 'level of log', false));
     }

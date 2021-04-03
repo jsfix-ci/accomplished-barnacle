@@ -17,14 +17,15 @@ export class ConnectorFactory {
     }
 
     public initialize(connectorName: string, connectorConfigurationFile: string, logger: Logger): Connector {
-        const configurationFileReader = new ConfigurationFileReader(logger);
-        const configurationConnector = configurationFileReader.read(connectorConfigurationFile);
-
         const connector: Connector | undefined = this.availableConnectors.find(aConnector => aConnector.name === connectorName);
         if (connector === undefined) {
             throw new Error("unknown connector name " + connectorName);
         }
-        connector.readConfiguration(configurationConnector);
+        if (connectorConfigurationFile !== undefined) {
+            const configurationFileReader = new ConfigurationFileReader(logger);
+            const configurationConnector = configurationFileReader.read(connectorConfigurationFile);
+            connector.readConfiguration(configurationConnector);
+        }
         return connector;
     }
 }
