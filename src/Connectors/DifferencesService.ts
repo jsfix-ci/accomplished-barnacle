@@ -3,6 +3,6 @@ import { HeijunkaBoard } from "outstanding-barnacle";
 import { Logger } from "sitka";
 import { IObjectEventProcessor } from "../IObjectEventProcessor";
 
-export abstract class ContextDifferencesService {
+export abstract class DifferencesService {
     abstract reconciliate(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void;
 }

@@ -5,6 +5,7 @@ import { Connector } from './Connectors/Connector';
 import { ISettings } from './ISettings';
 import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
+import { DomainDifferences } from './Connectors/DomainDifferences';
 
 export class Application {
     private logger: Logger;
@@ -35,10 +36,10 @@ export class Application {
     }
 
     private async reconcilitateDifferences(): Promise<void> {
-        this.connector.reconciliateStateModel(this.topic, this.domainModel.getDomainModel().stateModels, this.domainModel, this.logger);
-        this.connector.reconciliateProjects(this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
-        this.connector.reconciliateKanbanCards(this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
-        this.connector.reconciliateContexts(this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        this.connector.reconciliate(DomainDifferences.STATE_MODEL, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        this.connector.reconciliate(DomainDifferences.PROJECTS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        this.connector.reconciliate(DomainDifferences.KANBANCARDS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        this.connector.reconciliate(DomainDifferences.CONTEXT, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
         await this.backend.blockUntilBackendHasProcessedRequests();
     }
 

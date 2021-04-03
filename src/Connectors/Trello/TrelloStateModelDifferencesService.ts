@@ -1,11 +1,11 @@
 import { Topic } from "choicest-barnacle";
 import { Logger } from 'sitka';
-import { State, StateModel, StateModelCollection, StateModelEventFactory, UUIDGenerator } from "outstanding-barnacle";
+import { State, StateModel, HeijunkaBoard, StateModelEventFactory, UUIDGenerator } from "outstanding-barnacle";
 import { IObjectEventProcessor } from "../../IObjectEventProcessor";
-import { StateModelDifferencesService } from "../StateModelDifferencesService";
+import { DifferencesService } from "../DifferencesService";
 import { TrelloConfiguration } from "./TrelloConfiguration";
 
-export class TrelloStateModelDifferencesService extends StateModelDifferencesService {
+export class TrelloStateModelDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;
     private readonly stateModelName = 'stateModelOfLists';
 
@@ -14,8 +14,8 @@ export class TrelloStateModelDifferencesService extends StateModelDifferencesSer
         this.configuration = configuration;
     }
 
-    reconciliate(topic: Topic, stateModels: StateModelCollection, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
-        const alreadyDefined = (stateModels.getStateModels().find(stateModel => stateModel.name === this.stateModelName)) !== undefined;
+    reconciliate(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
+        const alreadyDefined = board.stateModels.getStateModels().length > 0;
         if (alreadyDefined) {
             return;
         }

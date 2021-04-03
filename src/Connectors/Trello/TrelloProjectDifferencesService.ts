@@ -3,9 +3,9 @@ import { Logger } from 'sitka';
 import { HeijunkaBoard, ProjectEventFactory } from "outstanding-barnacle";
 import { IObjectEventProcessor } from "../../IObjectEventProcessor";
 import { TrelloConfiguration } from "./TrelloConfiguration";
-import { ProjectDifferencesService } from "../ProjectDifferencesService";
+import { DifferencesService } from "../DifferencesService";
 
-export class TrelloProjectDifferencesService extends ProjectDifferencesService {
+export class TrelloProjectDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;
 
     constructor(configuration: TrelloConfiguration) {
