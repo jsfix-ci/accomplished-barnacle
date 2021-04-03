@@ -19,9 +19,9 @@ export class Backend implements ITopicService {
     private newTopicStream: Subscription = undefined;
 
     constructor(backendConfigurationFile: string, logger: Logger) {
-        const configurationFileReader = new ConfigurationFileReader(this.logger);
-        this.configuration = configurationFileReader.read(backendConfigurationFile);
         this.logger = logger;
+        const configurationFileReader = new ConfigurationFileReader(logger);
+        this.configuration = configurationFileReader.read(backendConfigurationFile);
     }
 
     public connect(): void {
