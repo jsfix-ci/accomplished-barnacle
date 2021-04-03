@@ -1,8 +1,29 @@
-import { TrelloCardResponse, TrelloActionResponse, TrelloConfiguration } from "./TrelloConfiguration";
+import { TrelloConfiguration } from "./TrelloConfiguration";
 import { HttpClient } from "../../Backend/HttpClient";
 import { Observable, of } from "rxjs";
 import { map, mergeAll, reduce, concatMap } from 'rxjs/operators';
 import { TrelloKanbanCard } from './TrelloKanbanCard';
+
+
+type TrelloCardResponse = {
+    name: string,
+    id: string
+}
+
+type TrelloActionResponse = {
+    name: string,
+    id: string,
+    date: string,
+    type: string,
+    data: {
+        list: {
+            id: string,
+            name: string
+        }
+        listBefore: { id: string, name: string },
+        listAfter: { id: string, name: string }
+    }
+}
 
 export class FetchKanbanCardsFromTrelloService {
     public fetch(httpClient: HttpClient, configuration: TrelloConfiguration): Observable<TrelloKanbanCard> {

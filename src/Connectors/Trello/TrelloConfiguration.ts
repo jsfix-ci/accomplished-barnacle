@@ -19,26 +19,6 @@ export type TrelloBoardResponse = {
     name: string
 }
 
-export type TrelloCardResponse = {
-    name: string,
-    id: string
-}
-
-export type TrelloActionResponse = {
-    name: string,
-    id: string,
-    date: string,
-    type: string,
-    data: {
-        list: {
-            id: string,
-            name: string
-        }
-        listBefore: { id: string, name: string },
-        listAfter: { id: string, name: string }
-    }
-}
-
 export class TrelloConfiguration extends Configuration {
     private _applicationKey: string;
     private _board: string;

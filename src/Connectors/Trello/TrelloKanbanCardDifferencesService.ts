@@ -5,6 +5,7 @@ import { TrelloConfiguration } from "./TrelloConfiguration";
 import { DifferencesService } from "../DifferencesService";
 import { HttpClient } from "../../Backend/HttpClient";
 import { Observable } from "rxjs";
+import { take } from 'rxjs/operators';
 import { TrelloKanbanCard } from './TrelloKanbanCard';
 import { FetchKanbanCardsFromTrelloService } from './FetchKanbanCardsFromTrelloService';
 
@@ -18,7 +19,7 @@ export class TrelloKanbanCardDifferencesService extends DifferencesService {
 
     public reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
         const httpClient = new HttpClient(logger, true);
-        const kanbanCardsOnTrelloBoard = new FetchKanbanCardsFromTrelloService().fetch(httpClient, this.configuration)
+        const kanbanCardsOnTrelloBoard = new FetchKanbanCardsFromTrelloService().fetch(httpClient, this.configuration).pipe(take(3));
         kanbanCardsOnTrelloBoard.subscribe({
             next(kanbanCard: TrelloKanbanCard) {
                 console.log(kanbanCard.toString());
