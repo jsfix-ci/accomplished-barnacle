@@ -1,6 +1,6 @@
 import { Logger } from 'sitka';
 import { Application } from './Application';
-import { Settings } from './Settings';
+import { Settings } from './CommandLine/Settings';
 
 import { ConnectorFactory } from './Connectors/ConnectorFactory';
 

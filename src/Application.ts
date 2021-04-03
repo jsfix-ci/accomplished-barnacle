@@ -2,7 +2,7 @@ import { Logger } from 'sitka';
 import { Backend } from './Backend/Backend';
 import { ITopicService } from './Backend/ITopicService';
 import { Connector } from './Connectors/Connector';
-import { ISettings } from './ISettings';
+import { ISettings } from './CommandLine/ISettings';
 import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './Connectors/DomainDifferences';

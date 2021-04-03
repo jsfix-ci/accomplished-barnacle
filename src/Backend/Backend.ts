@@ -2,7 +2,7 @@ import { ObjectEvent, Topic } from 'choicest-barnacle';
 import { Logger } from 'sitka';
 import { ITopicService } from './ITopicService';
 import { HttpClient } from './HttpClient';
-import { BackendConfiguration } from '../ISettings';
+import { BackendConfiguration } from '../CommandLine/ISettings';
 import { Client } from 'prime-barnacle';
 import { EventSourceFactory } from './EventSourceFactory';
 import { Observable, Subscription } from 'rxjs';

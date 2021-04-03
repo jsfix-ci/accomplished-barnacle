@@ -2,8 +2,8 @@ import { Logger } from 'sitka';
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
 import { ISettings, BackendConfiguration } from './ISettings';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
-import { Connector } from './Connectors/Connector';
-import { ConnectorFactory } from './Connectors/ConnectorFactory';
+import { Connector } from '../Connectors/Connector';
+import { ConnectorFactory } from '../Connectors/ConnectorFactory';
 
 enum SettingKey {
     BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',

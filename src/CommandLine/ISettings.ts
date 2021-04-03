@@ -1,4 +1,4 @@
-import { Connector } from './Connectors/Connector';
+import { Connector } from '../Connectors/Connector';
 
 export type BackendConfiguration = {
     endpoint: string
