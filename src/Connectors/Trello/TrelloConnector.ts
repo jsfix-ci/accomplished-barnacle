@@ -17,7 +17,7 @@ export class TrelloConnector extends Connector {
         this.setConfiguration(this.configuration);
         this.setDifferencesService(DomainDifferences.STATE_MODEL, new TrelloStateModelDifferencesService(this.configuration));
         this.setDifferencesService(DomainDifferences.PROJECTS, new TrelloProjectDifferencesService(this.configuration));
-        this.setDifferencesService(DomainDifferences.KANBANCARDS, new TrelloKanbanCardDifferencesService(this.configuration));
+        //this.setDifferencesService(DomainDifferences.KANBANCARDS, new TrelloKanbanCardDifferencesService(this.configuration));
     }
 
     public selectTopic(topicService: ITopicService): Topic {

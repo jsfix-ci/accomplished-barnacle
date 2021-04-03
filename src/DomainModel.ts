@@ -28,10 +28,10 @@ export class DomainModel implements IObjectEventProcessor {
 
     public process(objectEvent: ObjectEvent | ObjectEvent[]): void {
         let events: ObjectEvent[] = [];
-        if (objectEvent instanceof ObjectEvent) {
-            events.push(objectEvent);
-        } else {
+        if (objectEvent instanceof Array) {
             events = objectEvent;
+        } else {
+            events.push(objectEvent);
         }
         events.forEach(anEvent => {
             this.processLocalDomainModel(anEvent);

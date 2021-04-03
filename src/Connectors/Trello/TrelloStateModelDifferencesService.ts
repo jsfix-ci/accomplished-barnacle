@@ -1,9 +1,9 @@
-import { Topic } from "choicest-barnacle";
+import { ObjectEvent, Topic } from "choicest-barnacle";
 import { Logger } from 'sitka';
 import { State, StateModel, HeijunkaBoard, StateModelEventFactory, UUIDGenerator } from "outstanding-barnacle";
-import { IObjectEventProcessor } from "../../IObjectEventProcessor";
 import { DifferencesService } from "../DifferencesService";
 import { TrelloConfiguration } from "./TrelloConfiguration";
+import { Observable } from "rxjs";
 
 export class TrelloStateModelDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;
@@ -14,15 +14,16 @@ export class TrelloStateModelDifferencesService extends DifferencesService {
         this.configuration = configuration;
     }
 
-    reconciliate(topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
+    reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
         const alreadyDefined = board.stateModels.getStateModels().length > 0;
-        if (alreadyDefined) {
-            return;
-        }
-
-        logger.info('create state model');
-        const objectEvent = new StateModelEventFactory().create(topic, this.generateStateModel());
-        objectEventProcessor.process(objectEvent);
+        return new Observable(subscriber => {
+            if (!alreadyDefined) {
+                logger.info('create state model');
+                const objectEvent = new StateModelEventFactory().create(topic, this.generateStateModel());
+                subscriber.next(objectEvent);
+            }
+            subscriber.complete();
+        });
     }
 
     private generateStateModel(): StateModel {

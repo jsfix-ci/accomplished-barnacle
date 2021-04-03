@@ -1,4 +1,4 @@
-import { Topic } from "choicest-barnacle";
+import { ObjectEvent, Topic } from "choicest-barnacle";
 import { HeijunkaBoard } from "outstanding-barnacle";
 import { Logger } from "sitka";
 
@@ -23,11 +23,29 @@ export abstract class Connector {
         this._configuration.read(configuration);
     }
 
-    public reconciliate(domainDifference: DomainDifferences, topic: Topic, board: HeijunkaBoard, objectEventProcessor: IObjectEventProcessor, logger: Logger): void {
+    public async reconciliate(domainDifference: DomainDifferences, topic: Topic, board: HeijunkaBoard, processor: IObjectEventProcessor, logger: Logger): Promise<void> {
         if (!this._differenceServices.has(domainDifference)) {
             return;
         }
-        this._differenceServices.get(domainDifference).reconciliate(topic, board, objectEventProcessor, logger);
+        let allObjectEventsForwarded = false;
+        this._differenceServices.get(domainDifference).reconciliate(topic, board, logger).subscribe({
+            next(objectEvent: ObjectEvent) {
+                processor.process(objectEvent);
+            },
+            error() {
+                allObjectEventsForwarded = true;
+            },
+            complete() {
+                allObjectEventsForwarded = true;
+            }
+        });
+
+        let timeout = undefined;
+        while (!allObjectEventsForwarded) {
+            await new Promise(r => timeout = setTimeout(r, 100));
+            clearTimeout(timeout);
+            timeout = undefined;
+        }
     }
 
     protected setConfiguration(configuration: Configuration): void {

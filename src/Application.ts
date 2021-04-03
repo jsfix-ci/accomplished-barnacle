@@ -39,10 +39,10 @@ export class Application {
     }
 
     private async reconcilitateDifferences(): Promise<void> {
-        this.connector.reconciliate(DomainDifferences.STATE_MODEL, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
-        this.connector.reconciliate(DomainDifferences.PROJECTS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
-        this.connector.reconciliate(DomainDifferences.KANBANCARDS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
-        this.connector.reconciliate(DomainDifferences.CONTEXT, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        await this.connector.reconciliate(DomainDifferences.STATE_MODEL, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        await this.connector.reconciliate(DomainDifferences.PROJECTS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        await this.connector.reconciliate(DomainDifferences.KANBANCARDS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
+        await this.connector.reconciliate(DomainDifferences.CONTEXT, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
         await this.backend.blockUntilBackendHasProcessedRequests();
     }
 
