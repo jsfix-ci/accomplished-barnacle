@@ -13,10 +13,12 @@ const logger = Logger.getLogger(loggerConfig);
 
 try {
     const settings = new Settings(logger, new ConnectorFactory());
-    settings.parseCommandLineArguments(process.argv);
+    const noProblems = settings.parseCommandLineArguments(process.argv);
+    if (noProblems) {
+        const application = new Application(settings, logger);
+        application.run();
+    }
 
-    const application = new Application(settings, logger);
-    application.run();
 } catch (e) {
     console.log(e.message);
 }

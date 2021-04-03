@@ -6,45 +6,72 @@ import { Connector } from '../Connectors/Connector';
 import { ConnectorFactory } from '../Connectors/ConnectorFactory';
 import { CommandLineParameter } from './CommandLineParameter';
 import { FileNameParameter } from './FileNameParameter';
-import { StringParameter } from './StringParameter';
 import { LogLevelParameter } from './LogLevelParameter';
+import { ConnectorNameParameter } from './ConnectorNameParameter';
+
 enum SettingKey {
     BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',
     CONNECTOR_NAME = 'CONNECTOR_NAME',
-    CONNECTOR_FILE = 'CONNECTOR_FILE'
+    CONNECTOR_FILE = 'CONNECTOR_FILE',
+    LOG_LEVEL = 'LOG_LEVEL'
 }
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     private logger: Logger;
     private connectorFactory: ConnectorFactory;
     private backendConfigurationSettings: BackendConfiguration;
-    private cliParameters: CommandLineParameter<unknown>[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private cliParameters: Map<SettingKey, CommandLineParameter<any>> = new Map<SettingKey, CommandLineParameter<any>>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private configurationConnector: any;
-    private parameters: Map<string, string> = new Map<string, string>();
 
     constructor(logger: Logger, connectorFactory: ConnectorFactory) {
         this.logger = logger;
         this.connectorFactory = connectorFactory;
 
-        this.cliParameters.push(new StringParameter(logger, 'connector', 'connector name', true));
-        this.cliParameters.push(new FileNameParameter(logger, 'connector-config', 'connector configuration file', true));
-        this.cliParameters.push(new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
-        this.cliParameters.push(new LogLevelParameter(logger, 'log-level', 'level of log', false));
+        this.cliParameters.set(SettingKey.CONNECTOR_NAME, new ConnectorNameParameter(logger, 'connector', 'connector name', true, connectorFactory));
+        this.cliParameters.set(SettingKey.CONNECTOR_FILE, new FileNameParameter(logger, 'connector-config', 'connector configuration file', true));
+        this.cliParameters.set(SettingKey.BACKEND_CONFIGURATION_FILE, new FileNameParameter(logger, 'backend', 'backend configuration file', false, './backend.json'));
+        this.cliParameters.set(SettingKey.LOG_LEVEL, new LogLevelParameter(logger, 'log-level', 'level of log', false));
     }
 
-    public parseCommandLineArguments(args: string[]): void {
-        args.splice(0, 2);
-        try {
-            this.parseConnectorName(args);
-            this.parseConnectorSettingsFile(args);
-            this.parseBackendSettings(args);
-            this.readConnectorConfiguration();
-            this.readBackendConfiguration();
-        } catch (e) {
+    public parseCommandLineArguments(args: string[]): boolean {
+        const validationErrors: string[] = this.parseCommandLineParameters(args);
+        const missingMandatoryParameters = this.validateMandatoryParametersHaveValues();
+        missingMandatoryParameters.forEach(aMissingMandatoryParameter => validationErrors.push(aMissingMandatoryParameter));
+        if (validationErrors.length > 0) {
+            console.log('validation errors:');
+            validationErrors.forEach(aValidationError => {
+                console.log(aValidationError);
+            })
             this.printHelp();
-            throw e;
+            return false;
         }
+        this.readConnectorConfiguration();
+        this.readBackendConfiguration();
+        return true;
+    }
+
+    private parseCommandLineParameters(args: string[]): string[] {
+        args.splice(0, 2);
+        const validationErrors: string[] = [];
+        while (args.length >= 2) {
+            const key = args[0];
+            const value = args[1];
+            args.splice(0, 2);
+            const settingKey = this.findSettingKeyForParameter(key);
+            if (settingKey === undefined) {
+                validationErrors.push('unknown parameter ' + key);
+                continue;
+            }
+            const validationError = this.cliParameters.get(settingKey).validate(value);
+            if (validationError !== undefined) {
+                validationErrors.push(validationError);
+            } else {
+                this.cliParameters.get(settingKey).setValue(value);
+            }
+        }
+        return validationErrors;
     }
 
     public backendConfiguration(): BackendConfiguration {
@@ -53,50 +80,19 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
 
     public selectedConnector(): Connector {
         return this.connectorFactory.initialize(
-            this.parameters.get(SettingKey.CONNECTOR_NAME),
+            this.cliParameters.get(SettingKey.CONNECTOR_NAME).getValue(),
             this.configurationConnector
         );
     }
 
-    private parseConnectorName(args: string[]): void {
-        if (args.length <= 0) {
-            throw new Error("missing mandatory parameter connector name");
-        }
-        const connectorName = args[0];
-        if (!this.connectorFactory.getAvailableConnectorNames().some(connector => connectorName === connector)) {
-            let errorMessage: string = "unknown connector with name >>" + connectorName + "<<. Available are: ";
-            this.connectorFactory.getAvailableConnectorNames().forEach(connector => errorMessage = errorMessage + connector + ",");
-            errorMessage = errorMessage.substr(0, errorMessage.length - 1) + ".";
-            throw new Error(errorMessage);
-        }
-        this.parameters.set(SettingKey.CONNECTOR_NAME, connectorName);
-    }
-
-    private parseConnectorSettingsFile(args: string[]): void {
-        if (args.length <= 1) {
-            throw new Error("missing mandatory parameter connector settings file");
-        }
-        const connectorConfigurationFile = args[1];
-        this.parameters.set(SettingKey.CONNECTOR_FILE, connectorConfigurationFile);
-    }
-
-    private parseBackendSettings(args: string[]): void {
-        let backendConfigurationFile = './backend.json';
-        if (args.length >= 3) {
-            backendConfigurationFile = args[2];
-        }
-
-        this.parameters.set(SettingKey.BACKEND_CONFIGURATION_FILE, backendConfigurationFile);
-    }
-
     private readBackendConfiguration(): void {
         const configurationFileReader = new ConfigurationFileReader(this.logger);
-        this.backendConfigurationSettings = configurationFileReader.read(this.parameters.get(SettingKey.BACKEND_CONFIGURATION_FILE));
+        this.backendConfigurationSettings = configurationFileReader.read(this.cliParameters.get(SettingKey.BACKEND_CONFIGURATION_FILE).getValue());
     }
 
     private readConnectorConfiguration(): void {
         const configurationFileReader = new ConfigurationFileReader(this.logger);
-        this.configurationConnector = configurationFileReader.read(this.parameters.get(SettingKey.CONNECTOR_FILE));
+        this.configurationConnector = configurationFileReader.read(this.cliParameters.get(SettingKey.CONNECTOR_FILE).getValue());
     }
 
     private printHelp(): void {
@@ -107,5 +103,25 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
             description = description + ':' + (aParameter.description);
             console.log(" " + description)
         })
+    }
+
+    private findSettingKeyForParameter(parameter: string): SettingKey {
+        let result: SettingKey = undefined;
+        this.cliParameters.forEach((value, key) => {
+            if (value.key === parameter) {
+                result = key;
+            }
+        });
+        return result;
+    }
+
+    private validateMandatoryParametersHaveValues(): string[] {
+        const validationErrors: string[] = [];
+        this.cliParameters.forEach((value) => {
+            if (value.isMandatory && !value.hasValue()) {
+                validationErrors.push('missing value for mandatory parameter ' + value.key);
+            }
+        });
+        return validationErrors;
     }
 }
