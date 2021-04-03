@@ -1,7 +1,6 @@
 import { Logger } from 'sitka';
 import { Application } from './Application';
 import { SettingsFactory } from './CommandLine/SettingsFactory';
-
 import { ConnectorFactory } from './Connectors/ConnectorFactory';
 
 try {
