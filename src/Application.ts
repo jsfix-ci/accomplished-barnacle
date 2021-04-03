@@ -2,10 +2,11 @@ import { Logger } from 'sitka';
 import { Backend } from './Backend/Backend';
 import { ITopicService } from './Backend/ITopicService';
 import { Connector } from './Connectors/Connector';
-import { ISettings } from './CommandLine/ISettings';
+import { ISettings, SettingKey } from './CommandLine/ISettings';
 import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './Connectors/DomainDifferences';
+import { ConfigurationFileReader } from './CommandLine/ConfigurationFileReader';
 
 export class Application {
     private logger: Logger;
@@ -44,7 +45,9 @@ export class Application {
     }
 
     private async initializeBackend(): Promise<void> {
-        this.backend = new Backend(this.settings.backendConfiguration(), this.logger);
+        const configurationFileReader = new ConfigurationFileReader(this.logger);
+        const backendConfigurationSettings = configurationFileReader.read(this.settings.valueOf(SettingKey.BACKEND_CONFIGURATION_FILE));
+        this.backend = new Backend(backendConfigurationSettings, this.logger);
         this.backend.connect();
         await this.backend.blockUntilBackendHasProcessedRequests();
         this.logger.debug('initialized backend');

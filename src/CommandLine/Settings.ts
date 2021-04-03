@@ -1,6 +1,6 @@
 import { Logger } from 'sitka';
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
-import { ISettings, BackendConfiguration } from './ISettings';
+import { ISettings, SettingKey } from './ISettings';
 import { ConfigurationFileReader } from './ConfigurationFileReader';
 import { Connector } from '../Connectors/Connector';
 import { ConnectorFactory } from '../Connectors/ConnectorFactory';
@@ -8,13 +8,6 @@ import { CommandLineParameter } from './CommandLineParameter';
 import { FileNameParameter } from './FileNameParameter';
 import { LogLevelParameter } from './LogLevelParameter';
 import { ConnectorNameParameter } from './ConnectorNameParameter';
-
-enum SettingKey {
-    BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',
-    CONNECTOR_NAME = 'CONNECTOR_NAME',
-    CONNECTOR_FILE = 'CONNECTOR_FILE',
-    LOG_LEVEL = 'LOG_LEVEL'
-}
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     private logger: Logger;
@@ -47,6 +40,11 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public valueOf(settingKey: SettingKey): any {
+        return this.cliParameters.get(settingKey).getValue();
+    }
+
     private parseCommandLineParameters(args: string[]): string[] {
         args.splice(0, 2);
         const validationErrors: string[] = [];
@@ -69,12 +67,6 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         return validationErrors;
     }
 
-    public backendConfiguration(): BackendConfiguration {
-        const configurationFileReader = new ConfigurationFileReader(this.logger);
-        const backendConfigurationSettings = configurationFileReader.read(this.cliParameters.get(SettingKey.BACKEND_CONFIGURATION_FILE).getValue());
-        return backendConfigurationSettings;
-    }
-
     public selectedConnector(): Connector {
         const configurationFileReader = new ConfigurationFileReader(this.logger);
         const configurationConnector = configurationFileReader.read(this.cliParameters.get(SettingKey.CONNECTOR_FILE).getValue());
@@ -89,8 +81,8 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         this.cliParameters.forEach(aParameter => {
             let description = aParameter.key;
             description = description + ' ' + (aParameter.isMandatory ? '(mandatory)' : '(optional)');
-            description = description + ':' + (aParameter.description);
-            console.log(" " + description)
+            description = description + ': ' + (aParameter.description);
+            console.log(" " + description);
         })
     }
 
