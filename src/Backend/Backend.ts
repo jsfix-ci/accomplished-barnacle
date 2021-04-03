@@ -26,8 +26,11 @@ export class Backend implements ITopicService {
     }
 
     public async blockUntilBackendHasProcessedRequests(): Promise<void> {
+        let timeout = undefined;
         while (this.client.hasPendingRequests()) {
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise(r => timeout = setTimeout(r, 100));
+            clearTimeout(timeout);
+            timeout = undefined;
         }
     }
 
@@ -50,6 +53,7 @@ export class Backend implements ITopicService {
     public disconnect(): void {
         this.logger.debug('disconnecting from backend at ' + this.configuration.endpoint);
         this.disconnectWithTopics();
+        this.client.disconnect();
     }
 
     public getAvailableTopics(): Topic[] {
