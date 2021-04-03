@@ -1,5 +1,7 @@
 import { Connector } from "./Connector";
 import { TrelloConnector } from "./Trello/TrelloConnector";
+import { ConfigurationFileReader } from '../CommandLine/ConfigurationFileReader';
+import { Logger } from "sitka";
 
 export class ConnectorFactory {
     private availableConnectors: Connector[] = [];
@@ -14,13 +16,15 @@ export class ConnectorFactory {
         return result;
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-    public initialize(connectorName: string, connectorSettings: any): Connector {
+    public initialize(connectorName: string, connectorConfigurationFile: string, logger: Logger): Connector {
+        const configurationFileReader = new ConfigurationFileReader(logger);
+        const configurationConnector = configurationFileReader.read(connectorConfigurationFile);
+
         const connector: Connector | undefined = this.availableConnectors.find(aConnector => aConnector.name === connectorName);
         if (connector === undefined) {
             throw new Error("unknown connector name " + connectorName);
         }
-        connector.readConfiguration(connectorSettings);
+        connector.readConfiguration(configurationConnector);
         return connector;
     }
 }

@@ -64,8 +64,7 @@ export class Application {
     }
 
     private initializeConnector() {
-        const configurationFileReader = new ConfigurationFileReader(this.logger);
-        const configurationConnector = configurationFileReader.read(this.settings.valueOf(SettingKey.CONNECTOR_FILE));
-        this.connector = this.connectorFactory.initialize(this.settings.valueOf(SettingKey.CONNECTOR_NAME), configurationConnector);
+        this.connector = this.connectorFactory.initialize(this.settings.valueOf(SettingKey.CONNECTOR_NAME),
+            this.settings.valueOf(SettingKey.CONNECTOR_FILE), this.logger);
     }
 }
