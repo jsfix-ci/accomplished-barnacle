@@ -2,7 +2,7 @@ import { LogLevel } from 'sitka';
 import { CommandLineParameter } from './CommandLineParameter';
 
 export class LogLevelParameter extends CommandLineParameter<LogLevel> {
-    private readonly allowedLogLevels = [LogLevel.ALL, LogLevel.ERROR, LogLevel.WARN, LogLevel.INFO, LogLevel.DEBUG];
+    private readonly allowedLogLevels = ['ALL', 'ERROR', 'WARN', 'DEBUG', 'INFO'];
 
     constructor(key: string, description: string, isMandatory: boolean, defaultValue: LogLevel = LogLevel.WARN) {
         super(key, description, isMandatory);
@@ -10,7 +10,7 @@ export class LogLevelParameter extends CommandLineParameter<LogLevel> {
     }
 
     public validate(value: string): string | undefined {
-        if (!this.allowedLogLevels.some(aLogLevel => aLogLevel.toString().toLowerCase() === value.toLowerCase())) {
+        if (!this.allowedLogLevels.some(aLogLevel => aLogLevel.toLowerCase() === value.toLowerCase())) {
             let descriptionAllowed = '';
             this.allowedLogLevels.forEach(aLogLevel => {
                 descriptionAllowed = descriptionAllowed + aLogLevel + ', ';
@@ -21,6 +21,22 @@ export class LogLevelParameter extends CommandLineParameter<LogLevel> {
     }
 
     public setValue(value: string): void {
-        this._value = this.allowedLogLevels.find(aLogLevel => aLogLevel.toString().toLowerCase() === value.toLowerCase());
+        switch (value.toLowerCase()) {
+            case 'all':
+                this._value = LogLevel.ALL;
+                break;
+            case 'info':
+                this._value = LogLevel.INFO;
+                break;
+            case 'error':
+                this._value = LogLevel.ERROR;
+                break;
+            case 'warn':
+                this._value = LogLevel.WARN;
+                break;
+            case 'debug':
+                this._value = LogLevel.DEBUG;
+                break;
+        }
     }
 }
