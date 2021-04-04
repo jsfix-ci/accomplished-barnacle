@@ -1,4 +1,4 @@
-import { TrelloConfiguration } from '../src/Connectors/Trello/TrelloConfiguration';
+import { TrelloConfiguration } from '../../../src/Connectors/Trello/TrelloConfiguration';
 
 describe('TrelloConfiguration', () => {
 	it('mandatory parameter: topic', () => {
