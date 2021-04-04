@@ -1,5 +1,9 @@
+# v0.4.0
+- trello connector: synchronize project
+- trello connector: create new kanban cards
+
 # v0.3.0
-- synchronize state model for trello connector
+- trello connector: synchronize state model
 
 # v0.2.1
 - fix: don't publish documentation

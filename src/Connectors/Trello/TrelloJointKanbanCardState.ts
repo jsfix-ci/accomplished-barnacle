@@ -31,6 +31,7 @@ export class TrelloJointKanbanCardState {
     }
 
     public createKanbanCard(trelloId: string, name: string, createdAt: Date): void {
+        this.logger.info('create kanban card "' + name + '" (' + trelloId + ')');
         const { events, kanbanCardId } = this.kanbanCardFactory.create(this.topic, name, this.project, this.stateModel);
         events.push(this.kanbanCardFactory.initializeProperty(this.topic, kanbanCardId, TrelloKanbanCardProperties.ID, trelloId));
         events.forEach(anEvent => {
