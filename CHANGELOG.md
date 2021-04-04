@@ -1,3 +1,6 @@
+# v1.0.0
+- trello connector: read transitions for newly created kanban card as well.
+
 # v0.4.0
 - trello connector: synchronize project
 - trello connector: create new kanban cards

@@ -1,6 +1,6 @@
 {
   "name": "accomplished-barnacle",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "A CLI to extract project history.",
   "keywords": [],
   "author": "Axel",
@@ -40,7 +40,7 @@
   "dependencies": {
     "choicest-barnacle": "2.3.0",
     "eventsource": "^1.1.0",
-    "outstanding-barnacle": "^6.4.0",
+    "outstanding-barnacle": "^6.4.1",
     "prime-barnacle": "^2.4.3",
     "rxjs": "^6.6.7",
     "sitka": "^1.0.5"
