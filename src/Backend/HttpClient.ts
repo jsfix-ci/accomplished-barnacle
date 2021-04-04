@@ -35,11 +35,18 @@ export class HttpClient implements IHTTPClient {
                 path: urlObject.pathname,
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=utf-8',
+                    "Accept-Encoding": "UTF-8",
                     'Content-Length': asString.length
                 }
             }
-            const req = this.requestHttp(options);
+            const req = this.requestHttp(options, (res: http.IncomingMessage) => {
+                if (res.statusCode !== undefined && res.statusCode !== 200) {
+                    this.logger.error('could not transmit message to ' + clientUrl);
+                    this.logger.error(' request returned with HTTP result code ' + res.statusCode);
+                    this.logger.error(' transferred json ' + JSON.stringify(json));
+                }
+            });
 
             req.write(asString);
             req.end();
