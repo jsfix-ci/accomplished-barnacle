@@ -19,19 +19,9 @@ export class TrelloKanbanCard {
     }
 
     public addTransition(toList: string, at: Date): void {
-        // for a few cards, the createCard date is not available
         if (this.createdAt === undefined || this.createdAt > at) {
             this.createdAt = at;
         }
         this.transitions.push({ toList: toList, at: at });
-    }
-
-    public toString(): string {
-        let result: string = this.name;
-        if (this.createdAt !== undefined) {
-            result = result + ' (' + this.createdAt.toDateString() + ')';
-        }
-        result = result + ' #transitions = ' + this.transitions.length;
-        return result;
     }
 }
