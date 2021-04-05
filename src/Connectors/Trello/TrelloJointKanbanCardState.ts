@@ -1,5 +1,5 @@
 import { KanbanCard, HeijunkaBoard, KanbanCardEventFactory, Project, StateModel, State } from "outstanding-barnacle";
-import { Topic, ObjectEvent } from "choicest-barnacle";
+import { Topic, ObjectEvent, ModificationService } from "choicest-barnacle";
 import { Logger } from "sitka";
 import { TrelloKanbanCardProperties, TrelloTransition } from './TrelloKanbanCard'
 
@@ -12,6 +12,7 @@ export class TrelloJointKanbanCardState {
     private readonly stateModel: StateModel;
     private reconciliationEvents: ObjectEvent[] = [];
     private readonly kanbanCardFactory: KanbanCardEventFactory = new KanbanCardEventFactory();
+    private readonly objectEventModificationService: ModificationService = new ModificationService();
 
     constructor(kanbanCards: KanbanCard[], board: HeijunkaBoard, project: Project, stateModel: StateModel, topic: Topic, logger: Logger) {
         this.kanbanCards = kanbanCards;
@@ -34,9 +35,7 @@ export class TrelloJointKanbanCardState {
         this.logger.info('create kanban card "' + name + '" (' + trelloId + ')');
         const { events, kanbanCardId } = this.kanbanCardFactory.create(this.topic, name, this.project, this.stateModel);
         events.push(this.kanbanCardFactory.initializeProperty(this.topic, kanbanCardId, TrelloKanbanCardProperties.ID, trelloId));
-        events.forEach(anEvent => {
-            this.addEvent(anEvent, createdAt);
-        });
+        this.addEvent(events, createdAt);
         return kanbanCardId;
     }
 
@@ -54,8 +53,15 @@ export class TrelloJointKanbanCardState {
         this.addEvent(event, transition.at);
     }
 
-    private addEvent(event: ObjectEvent, atTime: Date) {
-        event.time = atTime;
-        this.reconciliationEvents.push(event);
+    private addEvent(event: ObjectEvent | ObjectEvent[], atTime: Date) {
+        if (event instanceof Array) {
+            event = this.objectEventModificationService.adjustTimes(event, atTime);
+            event.forEach(anEvent => {
+                this.reconciliationEvents.push(anEvent);
+            });
+        } else {
+            event = this.objectEventModificationService.adjustTime(event, atTime);
+            this.reconciliationEvents.push(event);
+        }
     }
 }

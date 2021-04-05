@@ -38,7 +38,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "choicest-barnacle": "2.3.0",
+    "choicest-barnacle": "2.4.0",
     "eventsource": "^1.1.0",
     "outstanding-barnacle": "^6.4.1",
     "prime-barnacle": "^2.4.3",
