@@ -1,4 +1,4 @@
-import { KanbanCard, HeijunkaBoard, KanbanCardEventFactory, Project, StateModel, State } from "outstanding-barnacle";
+import { KanbanCard, HeijunkaBoard, KanbanCardEventFactory, Project, StateModel, State, KanbanCardProperties } from "outstanding-barnacle";
 import { Topic, ObjectEvent, ModificationService } from "choicest-barnacle";
 import { Logger } from "sitka";
 import { TrelloKanbanCardProperties, TrelloTransition } from './TrelloKanbanCard'
@@ -51,6 +51,13 @@ export class TrelloJointKanbanCardState {
         }
         const event: ObjectEvent = this.kanbanCardFactory.moveToInProgress(this.topic, kanbanCardId, moveTo);
         this.addEvent(event, transition.at);
+    }
+
+    public rename(kanbanCard: KanbanCard, newName: string): void {
+        this.logger.info('rename kanban card to ' + newName);
+
+        const event: ObjectEvent = this.kanbanCardFactory.updateProperty(this.topic, kanbanCard, KanbanCardProperties.NAME, newName);
+        this.reconciliationEvents.push(event);
     }
 
     public markAsStillOnTrelloBoard(kanbanCard: KanbanCard): void {

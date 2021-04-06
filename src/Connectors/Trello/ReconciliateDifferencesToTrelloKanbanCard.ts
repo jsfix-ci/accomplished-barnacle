@@ -1,6 +1,6 @@
 import { TrelloKanbanCard } from './TrelloKanbanCard';
 import { TrelloJointKanbanCardState } from './TrelloJointKanbanCardState';
-import { KanbanCard } from 'outstanding-barnacle';
+import { KanbanCard, KanbanCardProperties } from 'outstanding-barnacle';
 
 export class ReconciliateDifferencesToTrelloKanbanCard {
     public merge(trelloKanbanCard: TrelloKanbanCard, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
@@ -25,6 +25,9 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
 
     private mergeChangesWith(trelloKanbanCard: TrelloKanbanCard, correspondingBarnacleCard: KanbanCard,
         state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
+        if (trelloKanbanCard.name !== correspondingBarnacleCard.valueOfProperty(KanbanCardProperties.NAME)) {
+            state.rename(correspondingBarnacleCard, trelloKanbanCard.name);
+        }
         return state;
     }
 
