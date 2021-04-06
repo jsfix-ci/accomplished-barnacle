@@ -10,6 +10,7 @@ import { TrelloKanbanCard } from './TrelloKanbanCard';
 import { FetchKanbanCardsFromTrelloService } from './FetchKanbanCardsFromTrelloService';
 import { TrelloJointKanbanCardState } from "./TrelloJointKanbanCardState";
 import { ReconciliateDifferencesToTrelloKanbanCard } from './ReconciliateDifferencesToTrelloKanbanCard';
+import { RemoveKanbanCardsNotInTrelloAnymore } from './RemoveKanbanCardsNotInTrelloAnymore';
 
 export class TrelloKanbanCardDifferencesService extends DifferencesService {
     private configuration: TrelloConfiguration;
@@ -22,6 +23,7 @@ export class TrelloKanbanCardDifferencesService extends DifferencesService {
     public reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
         const httpClient = new HttpClient(logger, true);
         const allCards = board.kanbanCards.getKanbanCards();
+        const removeKanbanCardsNotInTrelloAnymore = new RemoveKanbanCardsNotInTrelloAnymore();
         const jointState = new TrelloJointKanbanCardState(allCards, board,
             board.projects.getProjects()[0], board.stateModels.getStateModels()[0], topic, logger);
         const reconciliateDifferencesToTrelloKanbanCard = new ReconciliateDifferencesToTrelloKanbanCard()
@@ -34,6 +36,9 @@ export class TrelloKanbanCardDifferencesService extends DifferencesService {
                         return reconciliateDifferencesToTrelloKanbanCard.merge(value, acc);
                     },
                     jointState
+                ),
+                map<TrelloJointKanbanCardState, TrelloJointKanbanCardState>(
+                    value => removeKanbanCardsNotInTrelloAnymore.findAndRemoveTrashedKanbanCards(value)
                 ),
                 map<TrelloJointKanbanCardState, Observable<ObjectEvent>>(
                     value => { return from(value.getReconciliationEvents()) }
