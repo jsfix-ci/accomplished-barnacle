@@ -53,6 +53,10 @@ export class TrelloJointKanbanCardState {
         this.addEvent(event, transition.at);
     }
 
+    public markAsStillOnTrelloBoard(kanbanCard: KanbanCard): void {
+        this.kanbanCards.splice(this.kanbanCards.findIndex(aCard => aCard.id === kanbanCard.id), 1);
+    }
+
     private addEvent(event: ObjectEvent | ObjectEvent[], atTime: Date) {
         if (event instanceof Array) {
             event = this.objectEventModificationService.adjustTimes(event, atTime);
