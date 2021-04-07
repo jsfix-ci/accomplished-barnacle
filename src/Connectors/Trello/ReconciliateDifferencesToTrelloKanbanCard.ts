@@ -28,6 +28,14 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
         if (trelloKanbanCard.name !== correspondingBarnacleCard.valueOfProperty(KanbanCardProperties.NAME)) {
             state.rename(correspondingBarnacleCard, trelloKanbanCard.name);
         }
+
+        const knownTransitions = correspondingBarnacleCard.history.transitions;
+        trelloKanbanCard.transitions.forEach(aTransition => {
+            const indexOfCorrespondingTransition = knownTransitions.findIndex(transition => Math.abs(transition.occurredAt.getTime() - aTransition.at.getTime()) < 1100);
+            if (indexOfCorrespondingTransition === -1) {
+                state.addTransition(trelloKanbanCard.id, correspondingBarnacleCard.id, aTransition);
+            }
+        });
         return state;
     }
 
