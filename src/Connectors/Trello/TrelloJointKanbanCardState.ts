@@ -64,6 +64,15 @@ export class TrelloJointKanbanCardState {
         this.kanbanCards.splice(this.kanbanCards.findIndex(aCard => aCard.id === kanbanCard.id), 1);
     }
 
+    public getKanbanCardsNotMarkedAsStillOnTrelloBoard(): KanbanCard[] {
+        return this.kanbanCards;
+    }
+
+    public moveToTrash(kanbanCard: KanbanCard): void {
+        const event = this.kanbanCardFactory.moveToTrash(this.topic, kanbanCard);
+        this.reconciliationEvents.push(event);
+    }
+
     private addEvent(event: ObjectEvent | ObjectEvent[], atTime: Date) {
         if (event instanceof Array) {
             event = this.objectEventModificationService.adjustTimes(event, atTime);
