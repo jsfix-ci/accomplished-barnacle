@@ -1,3 +1,7 @@
+# next version
+- trello connector: track new transitions for existing kanban cards.
+- trello connector: if a trello card has been deleted, it is moved to trash on the board
+
 # v1.0.0
 - trello connector: read transitions for newly created kanban card as well.
 
