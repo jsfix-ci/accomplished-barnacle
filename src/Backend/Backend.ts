@@ -8,6 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ConfigurationFileReader } from '../CommandLine/ConfigurationFileReader';
 import { ISettings } from '../TopLevelCommand/ISettings';
 import { GeneralSettings } from '../CommandLine/GeneralSettings';
+import { UUIDGenerator } from 'outstanding-barnacle';
 
 type BackendConfiguration = {
     endpoint: string
@@ -73,6 +74,11 @@ export class Backend implements ITopicService {
 
     public getAvailableTopics(): Topic[] {
         return [...this.topics];
+    }
+
+    public createTopic(nameTopic: string): void {
+        const topic = new Topic(UUIDGenerator.createUUID(), nameTopic);
+        this.client.storeTopic(topic);
     }
 
     private connectWithTopics(): void {
