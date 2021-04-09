@@ -7,5 +7,5 @@ export interface ITopLevelCommand {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     commandLineParameters(): { key: string, parameter: CommandLineParameter<any> }[];
 
-    run(settings: ISettings, logger: Logger): void;
+    run(settings: ISettings, logger: Logger): Promise<void>;
 }

@@ -3,10 +3,12 @@ import { Settings } from './CommandLine/Settings';
 import { GeneralSettings } from './CommandLine/GeneralSettings';
 
 import { ConnectorCommand } from './Connectors/ConnectorCommand';
+import { ListTopicsCommand } from './Topics/ListTopicsCommand';
 
 try {
     const settings = new Settings();
     settings.add(new ConnectorCommand());
+    settings.add(new ListTopicsCommand());
     const noProblems = settings.parseCommandLineArguments(process.argv);
     if (noProblems) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -11,9 +11,9 @@ import { ISettings } from "../TopLevelCommand/ISettings";
 export class ConnectorCommand implements ITopLevelCommand {
     private connectorFactory: ConnectorFactory = new ConnectorFactory();
 
-    public run(settings: ISettings, logger: Logger): void {
+    public async run(settings: ISettings, logger: Logger): Promise<void> {
         const application = new ConnectorApplication(settings, this.connectorFactory, logger);
-        application.run();
+        return application.run();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
