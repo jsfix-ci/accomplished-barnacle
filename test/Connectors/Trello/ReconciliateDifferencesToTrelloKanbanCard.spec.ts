@@ -7,7 +7,7 @@ import { TrelloKanbanCard, TrelloKanbanCardProperties } from '../../../src/Conne
 
 describe('ReconciliateDifferencesToTrelloKanbanCard', () => {
 
-	it('fix: Transitions are repeatedly added, even though they shouldn\'t', () => {
+	it('missing transactions are added', () => {
 		const trelloKanbanCard = new TrelloKanbanCard('aKanbanCard', 'trelloKanbanCardId');
 		trelloKanbanCard.addTransition('Backlog', new Date(1617728247810));
 		trelloKanbanCard.addTransition('In Progress', new Date(1617727961318));
@@ -39,7 +39,7 @@ describe('ReconciliateDifferencesToTrelloKanbanCard', () => {
 
 		const state = generateState([aKanbanCard]);
 		const testObject = new ReconciliateDifferencesToTrelloKanbanCard();
-		expect(testObject.merge(trelloKanbanCard, state).getReconciliationEvents()).toHaveLength(0);
+		expect(testObject.merge(trelloKanbanCard, state).getReconciliationEvents()).toHaveLength(3);
 	});
 });
 
