@@ -6,6 +6,8 @@ import { Client } from 'prime-barnacle';
 import { EventSourceFactory } from './EventSourceFactory';
 import { Observable, Subscription } from 'rxjs';
 import { ConfigurationFileReader } from '../CommandLine/ConfigurationFileReader';
+import { ISettings } from '../TopLevelCommand/ISettings';
+import { GeneralSettings } from '../CommandLine/GeneralSettings';
 
 type BackendConfiguration = {
     endpoint: string
@@ -22,6 +24,14 @@ export class Backend implements ITopicService {
         this.logger = logger;
         const configurationFileReader = new ConfigurationFileReader(logger);
         this.configuration = configurationFileReader.read(backendConfigurationFile);
+    }
+
+    public static async initializeBackend(settings: ISettings, logger: Logger): Promise<Backend> {
+        const backend = new Backend(settings.valueOf(GeneralSettings.BACKEND_CONFIGURATION_FILE), logger);
+        backend.connect();
+        await backend.blockUntilBackendHasProcessedRequests();
+        logger.debug('initialized backend');
+        return backend;
     }
 
     public connect(): void {
