@@ -36,6 +36,7 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
                 state.addTransition(trelloKanbanCard.id, correspondingBarnacleCard.id, aTransition);
             }
         });
+
         return state;
     }
 
