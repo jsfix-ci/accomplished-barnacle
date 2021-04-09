@@ -8,7 +8,6 @@ import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './DomainDifferences';
 import { ConnectorFactory } from './ConnectorFactory';
-import { GeneralSettings } from '../CommandLine/GeneralSettings';
 
 export class ConnectorApplication {
     private logger: Logger;
@@ -27,7 +26,9 @@ export class ConnectorApplication {
 
     public async run(): Promise<void> {
         this.initializeConnector();
-        await this.initializeBackend();
+        await Backend.initializeBackend(this.settings, this.logger).then((value => {
+            this.backend = value;
+        }));
         await this.initializeDomainModel();
 
         await this.reconcilitateDifferences();
@@ -46,13 +47,6 @@ export class ConnectorApplication {
         await this.connector.reconciliate(DomainDifferences.KANBANCARDS, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
         await this.connector.reconciliate(DomainDifferences.CONTEXT, this.topic, this.domainModel.getDomainModel(), this.domainModel, this.logger);
         await this.backend.blockUntilBackendHasProcessedRequests();
-    }
-
-    private async initializeBackend(): Promise<void> {
-        this.backend = new Backend(this.settings.valueOf(GeneralSettings.BACKEND_CONFIGURATION_FILE), this.logger);
-        this.backend.connect();
-        await this.backend.blockUntilBackendHasProcessedRequests();
-        this.logger.debug('initialized backend');
     }
 
     private async initializeDomainModel() {
