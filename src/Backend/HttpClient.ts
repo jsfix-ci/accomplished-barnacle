@@ -36,8 +36,7 @@ export class HttpClient implements IHTTPClient {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
-                    "Accept-Encoding": "UTF-8",
-                    'Content-Length': asString.length
+                    "Accept-Encoding": "gzip"
                 }
             }
             const req = this.requestHttp(options, (res: http.IncomingMessage) => {
