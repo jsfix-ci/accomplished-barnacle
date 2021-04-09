@@ -1,5 +1,5 @@
-import { CommandLineParameter } from './CommandLineParameter';
-import { ConnectorFactory } from '../Connectors/ConnectorFactory';
+import { CommandLineParameter } from '../TopLevelCommand/CommandLineParameter';
+import { ConnectorFactory } from './ConnectorFactory';
 
 export class ConnectorNameParameter extends CommandLineParameter<string> {
     private connectorFactory: ConnectorFactory;

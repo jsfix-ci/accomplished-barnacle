@@ -2,7 +2,8 @@ import { Logger } from 'sitka';
 import { Backend } from '../Backend/Backend';
 import { ITopicService } from '../Backend/ITopicService';
 import { Connector } from './Connector';
-import { ISettings, SettingKey } from '../CommandLine/ISettings';
+import { ISettings } from '../TopLevelCommand/ISettings';
+import { ConnectorSettings } from './ConnectorSettings';
 import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './DomainDifferences';
@@ -47,7 +48,7 @@ export class ConnectorApplication {
     }
 
     private async initializeBackend(): Promise<void> {
-        this.backend = new Backend(this.settings.valueOf(SettingKey.BACKEND_CONFIGURATION_FILE), this.logger);
+        this.backend = new Backend(this.settings.valueOf(ConnectorSettings.BACKEND_CONFIGURATION_FILE), this.logger);
         this.backend.connect();
         await this.backend.blockUntilBackendHasProcessedRequests();
         this.logger.debug('initialized backend');
@@ -61,7 +62,7 @@ export class ConnectorApplication {
     }
 
     private initializeConnector() {
-        this.connector = this.connectorFactory.initialize(this.settings.valueOf(SettingKey.CONNECTOR_NAME),
-            this.settings.valueOf(SettingKey.CONNECTOR_FILE), this.logger);
+        this.connector = this.connectorFactory.initialize(this.settings.valueOf(ConnectorSettings.CONNECTOR_NAME),
+            this.settings.valueOf(ConnectorSettings.CONNECTOR_FILE), this.logger);
     }
 }

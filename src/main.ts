@@ -1,25 +1,22 @@
 import { Logger } from 'sitka';
-import { ConnectorApplication } from './Connectors/ConnectorApplication';
-import { SettingKey } from './CommandLine/ISettings';
-import { SettingsFactory } from './CommandLine/SettingsFactory';
-import { ConnectorFactory } from './Connectors/ConnectorFactory';
+import { ConnectorSettings } from './Connectors/ConnectorSettings';
 import { ConnectorCommand } from './Connectors/ConnectorCommand';
+import { Settings } from './CommandLine/Settings';
+import { ITopLevelCommand } from './TopLevelCommand/ITopLevelCommand';
 
 try {
-    const connectorFactory = new ConnectorFactory();
-    const settings = SettingsFactory.generate(connectorFactory);
+    const settings = new Settings();
     settings.addCommand(new ConnectorCommand());
     const noProblems = settings.parseCommandLineArguments(process.argv);
     if (noProblems) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const loggerConfig: any = {
-            name: 'accomplished-barnacle', level: settings.valueOf(SettingKey.LOG_LEVEL),
+            name: 'accomplished-barnacle', level: settings.valueOf(ConnectorSettings.LOG_LEVEL),
             format: '[%{LEVEL}] : %{MESSAGE}'
         };
         const logger = Logger.getLogger(loggerConfig);
-
-        const application = new ConnectorApplication(settings, connectorFactory, logger);
-        application.run();
+        const command: ITopLevelCommand = settings.getSelectedCommand();
+        command.run(settings, logger);
     }
 } catch (e) {
     console.log(e.message);

@@ -1,23 +1,22 @@
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
-import { ISettings, SettingKey } from './ISettings';
-import { ITopLevelCommand } from '../ITopLevelCommand';
-import { CommandLineParameter } from './CommandLineParameter';
-
+import { ISettings } from '../TopLevelCommand/ISettings';
+import { ITopLevelCommand } from '../TopLevelCommand/ITopLevelCommand';
+import { CommandLineParameter } from '../TopLevelCommand/CommandLineParameter';
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private cliParameters: Map<SettingKey, CommandLineParameter<any>> = new Map<SettingKey, CommandLineParameter<any>>();
+    private cliParameters: Map<string, CommandLineParameter<any>> = new Map<string, CommandLineParameter<any>>();
     private commands: ITopLevelCommand[] = [];
     private selectedCommand: ITopLevelCommand;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public add(settingKey: SettingKey, parameter: CommandLineParameter<any>): void {
-        this.cliParameters.set(settingKey, parameter);
-    }
 
     public addCommand(toplevelCommand: ITopLevelCommand): void {
         this.commands.push(toplevelCommand);
     }
+
+    public getSelectedCommand(): ITopLevelCommand {
+        return this.selectedCommand;
+    }
+
     public parseCommandLineArguments(args: string[]): boolean {
         const validationErrors: string[] = this.parseCommandLineParameters(args);
         const missingMandatoryParameters = this.validateMandatoryParametersHaveValues();
@@ -34,7 +33,7 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public valueOf(settingKey: SettingKey): any {
+    public valueOf(settingKey: string): any {
         return this.cliParameters.get(settingKey).getValue();
     }
 
@@ -42,17 +41,66 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         return this.commands.find(command => command.name === name);
     }
 
-    private parseCommandLineParameters(args: string[]): string[] {
-        const validationErrors: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private add(settingKey: string, parameter: CommandLineParameter<any>): void {
+        this.cliParameters.set(settingKey, parameter);
+    }
 
+    private parseCommandLineParameters(args: string[]): string[] {
         args.splice(0, 2);
         this.selectedCommand = this.findTopLevelCommand(args[0]);
-        if (this.selectedCommand === undefined) {
-            validationErrors.push('unknown selectedCommand: ' + args[0]);
+        const validationErrors = this.readCommand(args[0]);
+        if (validationErrors.length > 0) {
             return validationErrors;
         }
         args.splice(0, 1);
+        return this.readParameters(args);
+    }
 
+    private printHelp(): void {
+        console.log("usage: ");
+        this.cliParameters.forEach(aParameter => {
+            let description = aParameter.key;
+            description = description + ' ' + (aParameter.isMandatory ? '(mandatory)' : '(optional)');
+            description = description + ': ' + (aParameter.description);
+            console.log(" " + description);
+        })
+    }
+
+    private findSettingKeyForParameter(parameter: string): string {
+        let result: string = undefined;
+        this.cliParameters.forEach((value, key) => {
+            if (value.key === parameter) {
+                result = key;
+            }
+        });
+        return result;
+    }
+
+    private validateMandatoryParametersHaveValues(): string[] {
+        const validationErrors: string[] = [];
+        this.cliParameters.forEach((value) => {
+            if (value.isMandatory && !value.hasValue()) {
+                validationErrors.push('missing value for mandatory parameter ' + value.key);
+            }
+        });
+        return validationErrors;
+    }
+
+    private readCommand(commandName: string): string[] {
+        this.selectedCommand = this.findTopLevelCommand(commandName);
+        if (this.selectedCommand === undefined) {
+            return ['unknown selectedCommand: ' + commandName];
+        }
+        const commandsParameters = this.selectedCommand.commandLineParameters();
+        commandsParameters.forEach(parameter => {
+            this.add(parameter.key, parameter.parameter);
+        })
+        return [];
+    }
+
+    private readParameters(args: string[]): string[] {
+        const validationErrors: string[] = [];
         while (args.length >= 2) {
             const key = args[0];
             const value = args[1];
@@ -69,36 +117,6 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
                 this.cliParameters.get(settingKey).setValue(value);
             }
         }
-        return validationErrors;
-    }
-
-    private printHelp(): void {
-        console.log("usage: ");
-        this.cliParameters.forEach(aParameter => {
-            let description = aParameter.key;
-            description = description + ' ' + (aParameter.isMandatory ? '(mandatory)' : '(optional)');
-            description = description + ': ' + (aParameter.description);
-            console.log(" " + description);
-        })
-    }
-
-    private findSettingKeyForParameter(parameter: string): SettingKey {
-        let result: SettingKey = undefined;
-        this.cliParameters.forEach((value, key) => {
-            if (value.key === parameter) {
-                result = key;
-            }
-        });
-        return result;
-    }
-
-    private validateMandatoryParametersHaveValues(): string[] {
-        const validationErrors: string[] = [];
-        this.cliParameters.forEach((value) => {
-            if (value.isMandatory && !value.hasValue()) {
-                validationErrors.push('missing value for mandatory parameter ' + value.key);
-            }
-        });
         return validationErrors;
     }
 }
