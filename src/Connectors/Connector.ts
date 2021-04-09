@@ -32,10 +32,12 @@ export abstract class Connector {
             next(objectEvent: ObjectEvent) {
                 processor.process(objectEvent);
             },
-            error() {
+            error(e) {
+                logger.error(e.message);
                 allObjectEventsForwarded = true;
             },
             complete() {
+                logger.info('reconciliated differences for ' + domainDifference);
                 allObjectEventsForwarded = true;
             }
         });
