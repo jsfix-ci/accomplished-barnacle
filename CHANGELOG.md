@@ -1,6 +1,7 @@
 # next version
 - trello connector: track new transitions for existing kanban cards.
 - trello connector: if a trello card has been deleted, it is moved to trash on the board
+- fix: transfer non-ASCII strings as well
 
 # v1.0.0
 - trello connector: read transitions for newly created kanban card as well.
