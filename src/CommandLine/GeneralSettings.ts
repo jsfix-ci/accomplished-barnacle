@@ -1,0 +1,4 @@
+export enum GeneralSettings {
+    BACKEND_CONFIGURATION_FILE = 'BACKEND_CONFIGURATION_FILE',
+    LOG_LEVEL = 'LOG_LEVEL'
+}

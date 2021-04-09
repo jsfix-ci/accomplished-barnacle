@@ -1,5 +1,5 @@
 import { LogLevel } from 'sitka';
-import { CommandLineParameter } from './CommandLineParameter';
+import { CommandLineParameter } from '../TopLevelCommand/CommandLineParameter';
 
 export class LogLevelParameter extends CommandLineParameter<LogLevel> {
     private readonly allowedLogLevels = ['ALL', 'ERROR', 'WARN', 'DEBUG', 'INFO'];

@@ -8,6 +8,7 @@ import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './DomainDifferences';
 import { ConnectorFactory } from './ConnectorFactory';
+import { GeneralSettings } from '../CommandLine/GeneralSettings';
 
 export class ConnectorApplication {
     private logger: Logger;
@@ -48,7 +49,7 @@ export class ConnectorApplication {
     }
 
     private async initializeBackend(): Promise<void> {
-        this.backend = new Backend(this.settings.valueOf(ConnectorSettings.BACKEND_CONFIGURATION_FILE), this.logger);
+        this.backend = new Backend(this.settings.valueOf(GeneralSettings.BACKEND_CONFIGURATION_FILE), this.logger);
         this.backend.connect();
         await this.backend.blockUntilBackendHasProcessedRequests();
         this.logger.debug('initialized backend');

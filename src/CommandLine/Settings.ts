@@ -2,6 +2,9 @@ import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
 import { ISettings } from '../TopLevelCommand/ISettings';
 import { ITopLevelCommand } from '../TopLevelCommand/ITopLevelCommand';
 import { CommandLineParameter } from '../TopLevelCommand/CommandLineParameter';
+import { GeneralSettings } from './GeneralSettings';
+import { FileNameParameter } from '../TopLevelCommand/FileNameParameter';
+import { LogLevelParameter } from './LogLevelParameter';
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,7 +12,12 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     private commands: ITopLevelCommand[] = [];
     private selectedCommand: ITopLevelCommand;
 
-    public addCommand(toplevelCommand: ITopLevelCommand): void {
+    constructor() {
+        this.addParameter(GeneralSettings.BACKEND_CONFIGURATION_FILE, new FileNameParameter('backend', 'backend configuration file', false, './backend.json'));
+        this.addParameter(GeneralSettings.LOG_LEVEL, new LogLevelParameter('log-level', 'level of log', false));
+    }
+
+    public add(toplevelCommand: ITopLevelCommand): void {
         this.commands.push(toplevelCommand);
     }
 
@@ -42,7 +50,7 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private add(settingKey: string, parameter: CommandLineParameter<any>): void {
+    private addParameter(settingKey: string, parameter: CommandLineParameter<any>): void {
         this.cliParameters.set(settingKey, parameter);
     }
 
@@ -94,7 +102,7 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         }
         const commandsParameters = this.selectedCommand.commandLineParameters();
         commandsParameters.forEach(parameter => {
-            this.add(parameter.key, parameter.parameter);
+            this.addParameter(parameter.key, parameter.parameter);
         })
         return [];
     }
