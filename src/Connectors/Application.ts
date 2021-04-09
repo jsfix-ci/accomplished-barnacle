@@ -1,12 +1,12 @@
 import { Logger } from 'sitka';
-import { Backend } from './Backend/Backend';
-import { ITopicService } from './Backend/ITopicService';
-import { Connector } from './Connectors/Connector';
-import { ISettings, SettingKey } from './CommandLine/ISettings';
+import { Backend } from '../Backend/Backend';
+import { ITopicService } from '../Backend/ITopicService';
+import { Connector } from './Connector';
+import { ISettings, SettingKey } from '../CommandLine/ISettings';
 import { DomainModel } from './DomainModel';
 import { Topic } from 'choicest-barnacle';
-import { DomainDifferences } from './Connectors/DomainDifferences';
-import { ConnectorFactory } from './Connectors/ConnectorFactory';
+import { DomainDifferences } from './DomainDifferences';
+import { ConnectorFactory } from './ConnectorFactory';
 
 export class Application {
     private logger: Logger;

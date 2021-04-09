@@ -1,5 +1,5 @@
 import { Logger } from 'sitka';
-import { Application } from './Application';
+import { Application } from './Connectors/Application';
 import { SettingKey } from './CommandLine/ISettings';
 import { SettingsFactory } from './CommandLine/SettingsFactory';
 import { ConnectorFactory } from './Connectors/ConnectorFactory';

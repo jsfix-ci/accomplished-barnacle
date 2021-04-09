@@ -2,7 +2,7 @@ import { ObjectEvent, Topic } from "choicest-barnacle";
 import { HeijunkaBoard } from "outstanding-barnacle";
 import { Logger } from "sitka";
 
-import { IObjectEventProcessor } from "../IObjectEventProcessor";
+import { IObjectEventProcessor } from "./IObjectEventProcessor";
 import { ITopicService } from "../Backend/ITopicService";
 import { Configuration } from "./Configuration"
 import { DifferencesService } from './DifferencesService'
