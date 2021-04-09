@@ -1,8 +1,8 @@
 import { Logger } from 'sitka';
-import { ConnectorCommand } from './Connectors/ConnectorCommand';
 import { Settings } from './CommandLine/Settings';
-import { ITopLevelCommand } from './TopLevelCommand/ITopLevelCommand';
 import { GeneralSettings } from './CommandLine/GeneralSettings';
+
+import { ConnectorCommand } from './Connectors/ConnectorCommand';
 
 try {
     const settings = new Settings();
@@ -15,8 +15,7 @@ try {
             format: '[%{LEVEL}] : %{MESSAGE}'
         };
         const logger = Logger.getLogger(loggerConfig);
-        const command: ITopLevelCommand = settings.getSelectedCommand();
-        command.run(settings, logger);
+        settings.getSelectedCommand().run(settings, logger);
     }
 } catch (e) {
     console.log(e.message);
