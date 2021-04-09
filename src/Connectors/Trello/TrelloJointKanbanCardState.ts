@@ -57,7 +57,7 @@ export class TrelloJointKanbanCardState {
         this.logger.info('rename kanban card to ' + newName);
 
         const event: ObjectEvent = this.kanbanCardFactory.updateProperty(this.topic, kanbanCard, KanbanCardProperties.NAME, newName);
-        this.reconciliationEvents.push(event);
+        this.addEvent(event);
     }
 
     public markAsStillOnTrelloBoard(kanbanCard: KanbanCard): void {
@@ -70,10 +70,10 @@ export class TrelloJointKanbanCardState {
 
     public moveToTrash(kanbanCard: KanbanCard): void {
         const event = this.kanbanCardFactory.moveToTrash(this.topic, kanbanCard);
-        this.reconciliationEvents.push(event);
+        this.addEvent(event);
     }
 
-    private addEvent(event: ObjectEvent | ObjectEvent[], atTime: Date) {
+    private addEvent(event: ObjectEvent | ObjectEvent[], atTime: Date = new Date()) {
         if (event instanceof Array) {
             event = this.objectEventModificationService.adjustTimes(event, atTime);
             event.forEach(anEvent => {
