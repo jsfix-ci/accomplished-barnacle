@@ -1,16 +1,23 @@
 import { ICommandLineArgumentsParser } from './ICommandLineArgumentsParser';
 import { ISettings, SettingKey } from './ISettings';
+import { ITopLevelCommand } from '../ITopLevelCommand';
 import { CommandLineParameter } from './CommandLineParameter';
+
 
 export class Settings implements ISettings, ICommandLineArgumentsParser {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private cliParameters: Map<SettingKey, CommandLineParameter<any>> = new Map<SettingKey, CommandLineParameter<any>>();
+    private commands: ITopLevelCommand[] = [];
+    private selectedCommand: ITopLevelCommand;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public add(settingKey: SettingKey, parameter: CommandLineParameter<any>): void {
         this.cliParameters.set(settingKey, parameter);
     }
 
+    public addCommand(toplevelCommand: ITopLevelCommand): void {
+        this.commands.push(toplevelCommand);
+    }
     public parseCommandLineArguments(args: string[]): boolean {
         const validationErrors: string[] = this.parseCommandLineParameters(args);
         const missingMandatoryParameters = this.validateMandatoryParametersHaveValues();
@@ -31,9 +38,21 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
         return this.cliParameters.get(settingKey).getValue();
     }
 
+    private findTopLevelCommand(name: string): ITopLevelCommand {
+        return this.commands.find(command => command.name === name);
+    }
+
     private parseCommandLineParameters(args: string[]): string[] {
-        args.splice(0, 2);
         const validationErrors: string[] = [];
+
+        args.splice(0, 2);
+        this.selectedCommand = this.findTopLevelCommand(args[0]);
+        if (this.selectedCommand === undefined) {
+            validationErrors.push('unknown selectedCommand: ' + args[0]);
+            return validationErrors;
+        }
+        args.splice(0, 1);
+
         while (args.length >= 2) {
             const key = args[0];
             const value = args[1];

@@ -8,7 +8,7 @@ import { Topic } from 'choicest-barnacle';
 import { DomainDifferences } from './DomainDifferences';
 import { ConnectorFactory } from './ConnectorFactory';
 
-export class Application {
+export class ConnectorApplication {
     private logger: Logger;
     private backend: Backend;
     private connector: Connector;
