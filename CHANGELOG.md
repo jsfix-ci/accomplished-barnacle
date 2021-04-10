@@ -1,4 +1,4 @@
-# next version
+# 1.2.0
 - trello connector: merge contexts as well
 
 # 1.1.0
