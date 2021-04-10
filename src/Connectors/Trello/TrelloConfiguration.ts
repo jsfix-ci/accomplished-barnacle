@@ -58,6 +58,10 @@ export class TrelloConfiguration extends Configuration {
         return 'https://api.trello.com/1/boards/' + this._board + '?' + this.keyAndTokenSuffixOfUrl();
     }
 
+    public labelURL(): string {
+        return 'https://api.trello.com/1/boards/' + this._board + '/labels?' + this.keyAndTokenSuffixOfUrl();
+    }
+
     public cardURL(): string {
         const fields = 'fields=name,id';
         return 'https://api.trello.com/1/boards/' + this._board + '/cards?' + fields + '&' + this.keyAndTokenSuffixOfUrl();

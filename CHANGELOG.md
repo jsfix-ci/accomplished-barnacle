@@ -1,3 +1,6 @@
+# next version
+- trello connector: merge contexts as well
+
 # 1.1.0
 - trello connector: track new transitions for existing kanban cards.
 - trello connector: if a trello card has been deleted, it is moved to trash on the board
