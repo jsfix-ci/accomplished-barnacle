@@ -45,5 +45,4 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
 
         return state;
     }
-
 }
