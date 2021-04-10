@@ -12,10 +12,12 @@ export class TrelloKanbanCard {
     public readonly id: string;
     public readonly transitions: TrelloTransition[] = [];
     public createdAt: Date = undefined;
+    public readonly labels: string[];
 
-    constructor(name: string, id: string) {
+    constructor(name: string, id: string, labels: string[]) {
         this.name = name;
         this.id = id;
+        this.labels = labels;
     }
 
     public addTransition(toList: string, at: Date): void {

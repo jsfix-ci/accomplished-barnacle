@@ -6,7 +6,8 @@ import { TrelloKanbanCard } from './TrelloKanbanCard';
 
 type TrelloCardResponse = {
     name: string,
-    id: string
+    id: string,
+    labels: { name: string }[]
 }
 
 type TrelloActionResponse = {
@@ -18,7 +19,7 @@ type TrelloActionResponse = {
         list: {
             id: string,
             name: string
-        }
+        },
         listBefore: { id: string, name: string },
         listAfter: { id: string, name: string }
     }
@@ -28,7 +29,7 @@ export class FetchKanbanCardsFromTrelloService {
     public fetch(httpClient: HttpClient, configuration: TrelloConfiguration): Observable<TrelloKanbanCard> {
         return httpClient.get(configuration.cardURL()).pipe(map<TrelloCardResponse, TrelloKanbanCard>(
             (value: TrelloCardResponse) => {
-                return new TrelloKanbanCard(value.name, value.id);
+                return new TrelloKanbanCard(value.name, value.id, value.labels.map(completeLabelInfo => completeLabelInfo.name));
             }),
             // wait for 0.1 seconds, as this is the rate limit imposed by Trello
             concatMap(value => {
