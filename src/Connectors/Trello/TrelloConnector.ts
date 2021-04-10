@@ -6,6 +6,7 @@ import { TrelloStateModelDifferencesService } from "./TrelloStateModelDifference
 import { TrelloProjectDifferencesService } from "./TrelloProjectDifferencesService";
 import { DomainDifferences } from "../DomainDifferences";
 import { TrelloKanbanCardDifferencesService } from "./TrelloKanbanCardDifferencesService";
+import { TrelloContextDifferencesService } from './TrelloContextDifferencesService';
 
 export class TrelloConnector extends Connector {
     public static readonly connectorName = 'trello';
@@ -18,6 +19,7 @@ export class TrelloConnector extends Connector {
         this.setDifferencesService(DomainDifferences.STATE_MODEL, new TrelloStateModelDifferencesService(this.configuration));
         this.setDifferencesService(DomainDifferences.PROJECTS, new TrelloProjectDifferencesService(this.configuration));
         this.setDifferencesService(DomainDifferences.KANBANCARDS, new TrelloKanbanCardDifferencesService(this.configuration));
+        this.setDifferencesService(DomainDifferences.CONTEXT, new TrelloContextDifferencesService(this.configuration));
     }
 
     public selectTopic(topicService: ITopicService): Topic {
