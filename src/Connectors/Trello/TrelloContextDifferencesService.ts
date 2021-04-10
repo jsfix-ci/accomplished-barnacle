@@ -1,6 +1,6 @@
 import { Topic, ObjectEvent } from "choicest-barnacle";
 import { Logger } from 'sitka';
-import { Context, HeijunkaBoard } from "outstanding-barnacle";
+import { Context, ContextEventFactory, HeijunkaBoard } from "outstanding-barnacle";
 import { TrelloConfiguration } from "./TrelloConfiguration";
 import { DifferencesService } from "../DifferencesService";
 import { HttpClient } from "../../Backend/HttpClient";
@@ -23,14 +23,29 @@ class TrelloLabelResponse {
 }
 
 class TrelloJointContextState {
-    definedContexts: Context[];
+    private definedContexts: Context[];
+    private topic: Topic;
+    private eventFactory: ContextEventFactory = new ContextEventFactory();
+    private reconciliationEvents: ObjectEvent[] = [];
+    private logger: Logger;
 
-    constructor(definedContexts: Context[]) {
+    constructor(definedContexts: Context[], topic: Topic, logger: Logger) {
         this.definedContexts = definedContexts;
+        this.topic = topic;
+        this.logger = logger;
     }
 
     public getReconciliationEvents(): ObjectEvent[] {
         return [];
+    }
+
+    public has(contextName: string): boolean {
+        return this.definedContexts.some(context => context.name === contextName);
+    }
+
+    public createContext(contextName: string): void {
+        this.logger.info('creating context ' + contextName);
+        this.reconciliationEvents.push(this.eventFactory.create(this.topic, contextName));
     }
 }
 
@@ -44,7 +59,7 @@ export class TrelloContextDifferencesService extends DifferencesService {
 
     public reconciliate(topic: Topic, board: HeijunkaBoard, logger: Logger): Observable<ObjectEvent> {
         const httpClient = new HttpClient(logger, true);
-        const jointContextState = new TrelloJointContextState(board.contexts.getContexts());
+        const jointContextState = new TrelloJointContextState(board.contexts.getContexts(), topic, logger);
 
         return this.fetchContextsFromTrelloService(httpClient)
             .pipe(
@@ -70,6 +85,9 @@ export class TrelloContextDifferencesService extends DifferencesService {
     }
 
     private mergeTrelloLabel(value: TrelloLabel, acc: TrelloJointContextState): TrelloJointContextState {
+        if (!acc.has(value.name)) {
+            acc.createContext(value.name);
+        }
         return acc;
     }
 }
