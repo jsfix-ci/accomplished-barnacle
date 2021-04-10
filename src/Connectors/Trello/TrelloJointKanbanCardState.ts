@@ -36,6 +36,10 @@ export class TrelloJointKanbanCardState {
         return this.board.contexts.getContexts().find(context => context.name === label);
     }
 
+    public findContextsOf(kanbanCardId: string): Context[] {
+        return this.board.contexts.getContexts().filter(context => context.contains(kanbanCardId));
+    }
+
     public addToContext(kanbanCardId: string, context: Context): void {
         this.logger.info('adding kanban card to context ' + context.name);
         this.addEvent(this.contextFactory.setContext(this.topic, context, kanbanCardId));

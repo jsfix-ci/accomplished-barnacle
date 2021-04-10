@@ -47,6 +47,13 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
     }
 
     private removeFromContexts(trelloKanbanCard: TrelloKanbanCard, kanbanCardId: string, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
+        const kanbanCardsContexts: Context[] = state.findContextsOf(kanbanCardId);
+        kanbanCardsContexts.forEach(context => {
+            const stillAssignedToLabel = trelloKanbanCard.labels.some(label => label === context.name);
+            if (!stillAssignedToLabel) {
+                state.removeFromContext(kanbanCardId, context);
+            }
+        })
         return state;
     }
 
