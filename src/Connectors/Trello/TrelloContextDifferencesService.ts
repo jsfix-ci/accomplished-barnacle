@@ -36,7 +36,7 @@ class TrelloJointContextState {
     }
 
     public getReconciliationEvents(): ObjectEvent[] {
-        return [];
+        return this.reconciliationEvents;
     }
 
     public has(contextName: string): boolean {
