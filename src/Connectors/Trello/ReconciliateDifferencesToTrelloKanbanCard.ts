@@ -19,30 +19,52 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
             trelloKanbanCard.transitions.forEach(aTrelloTransition => {
                 state.addTransition(trelloKanbanCard.id, newCardId, aTrelloTransition);
             });
-            trelloKanbanCard.labels.forEach(aLabel => {
-                const context: Context = state.findContext(aLabel);
-                if (context !== undefined && !context.contains(newCardId)) {
-                    state.addToContext(newCardId, context);
-                }
-            })
+
+            state = this.addToMissingContexts(trelloKanbanCard, newCardId, state);
         }
         return state;
     }
 
     private mergeChangesWith(trelloKanbanCard: TrelloKanbanCard, correspondingBarnacleCard: KanbanCard,
         state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
-        if (trelloKanbanCard.name !== correspondingBarnacleCard.valueOfProperty(KanbanCardProperties.NAME)) {
-            state.rename(correspondingBarnacleCard, trelloKanbanCard.name);
-        }
 
-        const knownTransitions = correspondingBarnacleCard.history.transitions;
+        state = this.updateName(trelloKanbanCard, correspondingBarnacleCard, state);
+        state = this.addMissingTransitions(trelloKanbanCard, correspondingBarnacleCard, state);
+        state = this.addToMissingContexts(trelloKanbanCard, correspondingBarnacleCard.id, state);
+        state = this.removeFromContexts(trelloKanbanCard, correspondingBarnacleCard.id, state);
+
+        return state;
+    }
+
+    private addToMissingContexts(trelloKanbanCard: TrelloKanbanCard, kanbanCardId: string, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
+        trelloKanbanCard.labels.forEach(aLabel => {
+            const context: Context = state.findContext(aLabel);
+            if (context !== undefined && !context.contains(kanbanCardId)) {
+                state.addToContext(kanbanCardId, context);
+            }
+        })
+        return state;
+    }
+
+    private removeFromContexts(trelloKanbanCard: TrelloKanbanCard, kanbanCardId: string, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
+        return state;
+    }
+
+    private updateName(trelloKanbanCard: TrelloKanbanCard, kanbanCard: KanbanCard, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
+        if (trelloKanbanCard.name !== kanbanCard.valueOfProperty(KanbanCardProperties.NAME)) {
+            state.rename(kanbanCard, trelloKanbanCard.name);
+        }
+        return state;
+    }
+
+    private addMissingTransitions(trelloKanbanCard: TrelloKanbanCard, kanbanCard: KanbanCard, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
+        const knownTransitions = kanbanCard.history.transitions;
         trelloKanbanCard.transitions.forEach(aTransition => {
             const indexOfCorrespondingTransition = knownTransitions.findIndex(transition => Math.abs(transition.occurredAt.getTime() - aTransition.at.getTime()) < 1100);
             if (indexOfCorrespondingTransition === -1) {
-                state.addTransition(trelloKanbanCard.id, correspondingBarnacleCard.id, aTransition);
+                state.addTransition(trelloKanbanCard.id, kanbanCard.id, aTransition);
             }
         });
-
         return state;
     }
 }
