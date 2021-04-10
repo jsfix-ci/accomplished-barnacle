@@ -1,6 +1,6 @@
 import { TrelloKanbanCard } from './TrelloKanbanCard';
 import { TrelloJointKanbanCardState } from './TrelloJointKanbanCardState';
-import { KanbanCard, KanbanCardProperties } from 'outstanding-barnacle';
+import { Context, KanbanCard, KanbanCardProperties } from 'outstanding-barnacle';
 
 export class ReconciliateDifferencesToTrelloKanbanCard {
     public merge(trelloKanbanCard: TrelloKanbanCard, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
@@ -19,6 +19,12 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
             trelloKanbanCard.transitions.forEach(aTrelloTransition => {
                 state.addTransition(trelloKanbanCard.id, newCardId, aTrelloTransition);
             });
+            trelloKanbanCard.labels.forEach(aLabel => {
+                const context: Context = state.findContext(aLabel);
+                if (context !== undefined && !context.contains(newCardId)) {
+                    state.addToContext(newCardId, context);
+                }
+            })
         }
         return state;
     }

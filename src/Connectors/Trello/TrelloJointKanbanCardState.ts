@@ -1,4 +1,4 @@
-import { KanbanCard, HeijunkaBoard, KanbanCardEventFactory, Project, StateModel, State, KanbanCardProperties } from "outstanding-barnacle";
+import { KanbanCard, HeijunkaBoard, KanbanCardEventFactory, Project, StateModel, State, KanbanCardProperties, Context, ContextEventFactory } from "outstanding-barnacle";
 import { Topic, ObjectEvent, ModificationService } from "choicest-barnacle";
 import { Logger } from "sitka";
 import { TrelloKanbanCardProperties, TrelloTransition } from './TrelloKanbanCard'
@@ -12,6 +12,7 @@ export class TrelloJointKanbanCardState {
     private readonly stateModel: StateModel;
     private reconciliationEvents: ObjectEvent[] = [];
     private readonly kanbanCardFactory: KanbanCardEventFactory = new KanbanCardEventFactory();
+    private readonly contextFactory: ContextEventFactory = new ContextEventFactory();
     private readonly objectEventModificationService: ModificationService = new ModificationService();
 
     constructor(kanbanCards: KanbanCard[], board: HeijunkaBoard, project: Project, stateModel: StateModel, topic: Topic, logger: Logger) {
@@ -29,6 +30,20 @@ export class TrelloJointKanbanCardState {
 
     public findKanbanCard(trelloId: string): KanbanCard {
         return this.kanbanCards.find(kanbanCard => kanbanCard.valueOfProperty(TrelloKanbanCardProperties.ID) === trelloId);
+    }
+
+    public findContext(label: string): Context {
+        return this.board.contexts.getContexts().find(context => context.name === label);
+    }
+
+    public addToContext(kanbanCardId: string, context: Context): void {
+        this.logger.info('adding kanban card to context ' + context.name);
+        this.addEvent(this.contextFactory.setContext(this.topic, context, kanbanCardId));
+    }
+
+    public removeFromContext(kanbanCardId: string, context: Context): void {
+        this.logger.info('removing kanban card from context ' + context.name);
+        this.addEvent(this.contextFactory.unsetContext(this.topic, context, kanbanCardId));
     }
 
     public createKanbanCard(trelloId: string, name: string, createdAt: Date): string {

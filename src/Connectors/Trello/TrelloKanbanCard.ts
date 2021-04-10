@@ -14,7 +14,7 @@ export class TrelloKanbanCard {
     public createdAt: Date = undefined;
     public readonly labels: string[];
 
-    constructor(name: string, id: string, labels: string[]) {
+    constructor(name: string, id: string, labels: string[] = []) {
         this.name = name;
         this.id = id;
         this.labels = labels;
