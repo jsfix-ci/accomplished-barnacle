@@ -76,9 +76,14 @@ export class Backend implements ITopicService {
         return [...this.topics];
     }
 
-    public createTopic(nameTopic: string): void {
+    public createTopic(nameTopic: string): Topic {
         const topic = new Topic(UUIDGenerator.createUUID(), nameTopic);
         this.client.storeTopic(topic);
+        return topic;
+    }
+
+    public deleteTopic(topic: Topic): void {
+        this.client.removeTopic(topic);
     }
 
     private connectWithTopics(): void {

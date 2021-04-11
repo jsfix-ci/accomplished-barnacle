@@ -5,12 +5,15 @@ import { GeneralSettings } from './CommandLine/GeneralSettings';
 import { ConnectorCommand } from './Connectors/ConnectorCommand';
 import { ListTopicsCommand } from './Topics/ListTopicsCommand';
 import { CreateTopicCommand } from './Topics/CreateTopicCommand';
+import { DeleteTopicCommand } from './Topics/DeleteTopicCommand';
 
 try {
     const settings = new Settings();
     settings.add(new ConnectorCommand());
     settings.add(new ListTopicsCommand());
     settings.add(new CreateTopicCommand());
+    settings.add(new DeleteTopicCommand());
+
     const noProblems = settings.parseCommandLineArguments(process.argv);
     if (noProblems) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
