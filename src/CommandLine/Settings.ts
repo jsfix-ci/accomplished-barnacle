@@ -66,7 +66,16 @@ export class Settings implements ISettings, ICommandLineArgumentsParser {
     }
 
     private printHelp(): void {
-        console.log("usage: ");
+        if (this.selectedCommand === undefined) {
+            console.log("available commands:");
+
+            this.commands.forEach(command => {
+                console.log('  ' + command.name);
+            })
+            return;
+        }
+
+        console.log("available parameters for command " + this.selectedCommand.name);
         this.cliParameters.forEach(aParameter => {
             let description = aParameter.key;
             description = description + ' ' + (aParameter.isMandatory ? '(mandatory)' : '(optional)');
