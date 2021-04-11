@@ -24,6 +24,28 @@ export class HttpClient implements IHTTPClient {
         }
     }
 
+    delete(clientUrl: string): void {
+        try {
+            this.logger.debug('DELETE ' + clientUrl);
+            const urlObject = new url.URL(clientUrl);
+            const options = {
+                hostname: urlObject.hostname,
+                port: urlObject.port,
+                path: urlObject.pathname,
+                method: 'DELETE',
+            }
+            const req = this.requestHttp(options, (res: http.IncomingMessage) => {
+                if (res.statusCode !== undefined && res.statusCode !== 200) {
+                    this.logger.error('could not transmit message to ' + clientUrl);
+                    this.logger.error(' request returned with HTTP result code ' + res.statusCode);
+                }
+            });
+            req.end();
+        } catch (e) {
+            this.logger.error(e);
+        }
+    }
+
     postJson(clientUrl: string, json: ObjectEventREST): void {
         try {
             this.logger.debug('POST Json ' + clientUrl + ' ' + json);
@@ -50,7 +72,7 @@ export class HttpClient implements IHTTPClient {
             req.write(asString);
             req.end();
         } catch (e) {
-            console.log(e);
+            console.log(e.message);
         }
     }
 
