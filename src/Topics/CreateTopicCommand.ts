@@ -21,8 +21,9 @@ export class CreateTopicCommand implements ITopLevelCommand {
         const nameOfNewTopic = settings.valueOf(this.nameKey);
         Backend.initializeBackend(settings, logger).then(
             (backend) => {
-                backend.createTopic(nameOfNewTopic);
+                const createdTopic = backend.createTopic(nameOfNewTopic);
                 backend.disconnect();
+                logger.info('created topic (' + createdTopic.id + ') with name ' + createdTopic.name);
             }
         )
     }

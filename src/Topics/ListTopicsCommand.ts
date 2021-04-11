@@ -17,7 +17,7 @@ export class ListTopicsCommand implements ITopLevelCommand {
             (backend) => {
                 console.log('available topics are:')
                 backend.getAvailableTopics().forEach(topic => {
-                    console.log(topic.id + ': ' + topic.name);
+                    console.log(topic.id + ' : ' + topic.name);
                 });
                 backend.disconnect();
             }
