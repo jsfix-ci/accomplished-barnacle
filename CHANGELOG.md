@@ -1,3 +1,6 @@
+# next version
+- user can delete topics as well
+
 # 1.2.0
 - trello connector: merge contexts as well
 
