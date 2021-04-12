@@ -29,7 +29,7 @@ export class TrelloProjectDifferencesService extends DifferencesService {
             (value: TrelloBoardResponse) => {
                 const projectName = value.name;
                 const stateModel = board.stateModels.getStateModels()[0];
-                const objectEvents = new ProjectEventFactory().create(topic, projectName, stateModel);
+                const objectEvents = new ProjectEventFactory().create(topic, projectName, stateModel, true);
                 logger.info('create project ' + projectName);
                 return from(objectEvents);
             }),

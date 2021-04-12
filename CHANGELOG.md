@@ -1,5 +1,6 @@
-# next version
+# 1.3.0
 - user can delete topics as well
+- projects are now labelled as immutable for other systems
 
 # 1.2.0
 - trello connector: merge contexts as well
