@@ -27,7 +27,7 @@ type TrelloActionResponse = {
 
 export class FetchKanbanCardsFromTrelloService {
     public fetch(httpClient: HttpClient, configuration: TrelloConfiguration): Observable<TrelloKanbanCard> {
-        const rateLimitPerCardMs = 100;
+        const rateLimitPerCardMs = 200;
         return httpClient.get(configuration.cardURL()).pipe(map<TrelloCardResponse, TrelloKanbanCard>(
             (value: TrelloCardResponse) => {
                 return new TrelloKanbanCard(value.name, value.id, value.labels.map(completeLabelInfo => completeLabelInfo.name));
@@ -66,7 +66,12 @@ export class FetchKanbanCardsFromTrelloService {
                 kanbanCard.addTransition(action.data.list.name, new Date(action.date));
                 break;
             case 'updateCard':
-                kanbanCard.addTransition(action.data.listAfter.name, new Date(action.date));
+                // eslint-disable-next-line no-prototype-builtins
+                if (action.data.hasOwnProperty('listAfter') && action.data.listAfter.hasOwnProperty('name')) {
+                    kanbanCard.addTransition(action.data.listAfter.name, new Date(action.date));
+                } else {
+                    console.log(action);
+                }
                 break;
             case 'closed':
                 console.log('closed trello action:' + action.data);
