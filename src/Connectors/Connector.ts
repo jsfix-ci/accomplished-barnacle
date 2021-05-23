@@ -34,7 +34,7 @@ export abstract class Connector {
                 processor.process(objectEvent);
             },
             error(e) {
-                logger.error(e.message);
+                logger.error('error in reconciliation of ' + domainDifference + ': ' + e.message);
                 allObjectEventsForwarded = true;
             },
             complete() {

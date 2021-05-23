@@ -45,7 +45,7 @@ export class HttpClient implements IHTTPClient {
             });
             req.end();
         } catch (e) {
-            this.logger.error(e);
+            this.logger.error('generic error in HTTPClient.delete: ' + e);
         }
     }
 
