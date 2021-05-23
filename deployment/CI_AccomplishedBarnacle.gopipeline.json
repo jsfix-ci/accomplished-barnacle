@@ -61,6 +61,16 @@
               "timeout": -1.0,
               "arguments": [
                 "run",
+                "start"
+              ],
+              "run_if": "passed",
+              "type": "exec"
+            },
+            {
+              "command": "npm",
+              "timeout": -1.0,
+              "arguments": [
+                "run",
                 "testCLI"
               ],
               "run_if": "passed",
