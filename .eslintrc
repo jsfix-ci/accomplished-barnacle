@@ -36,5 +36,15 @@
     "no-else-return": "error",
     "no-constructor-return": "error",
     "default-case-last": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "test/*.spec.ts"
+      ],
+      "rules": {
+        "no-magic-numbers": "off"
+      }
+    }
+  ]
 }
