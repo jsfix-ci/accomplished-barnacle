@@ -28,4 +28,24 @@ describe('TrelloKanbanCard', () => {
 		});
 	})
 
+	describe('redundant transitions are removed', () => {
+		it('duplicate transitions are removed', () => {
+			const testObject = new TrelloKanbanCard('name', 'id');
+			const aDate = new Date(2020, 11, 11, 10, 10);
+			testObject.addTransition('toList', aDate);
+			testObject.addTransition('toList', aDate);
+			expect(testObject.getTransitions()).toHaveLength(1);
+		});
+
+		it('subsequent transitions without a transition to a different state in between: The later one is redundant', () => {
+			const testObject = new TrelloKanbanCard('name', 'id');
+			const aDate = new Date(2020, 11, 11, 10, 10);
+			const aLaterDate = new Date(2020, 11, 12, 10, 10);
+			testObject.addTransition('toList', aDate);
+			testObject.addTransition('toList', aLaterDate);
+			expect(testObject.getTransitions()).toHaveLength(1);
+			expect(testObject.getTransitions()[0].at).toEqual(aDate);
+		});
+	})
+
 });

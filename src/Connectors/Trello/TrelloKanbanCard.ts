@@ -10,7 +10,7 @@ export enum TrelloKanbanCardProperties {
 export class TrelloKanbanCard {
     public readonly name: string;
     public readonly id: string;
-    public readonly transitions: TrelloTransition[] = [];
+    private readonly transitions: TrelloTransition[] = [];
     public createdAt: Date = undefined;
     public readonly labels: string[];
 
@@ -25,5 +25,20 @@ export class TrelloKanbanCard {
             this.createdAt = at;
         }
         this.transitions.push({ toList: toList, at: at });
+    }
+
+    public getTransitions(): TrelloTransition[] {
+        const result: TrelloTransition[] = [];
+        const sorted = this.transitions.sort((a, b) => a.at.getTime() - b.at.getTime());
+        sorted.forEach(aTransition => {
+            if (result.length === 0) {
+                result.push(aTransition);
+                return;
+            }
+            if (result[result.length - 1].toList !== aTransition.toList) {
+                result.push(aTransition);
+            }
+        })
+        return result;
     }
 }

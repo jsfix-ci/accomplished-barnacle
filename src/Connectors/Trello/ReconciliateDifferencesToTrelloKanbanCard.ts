@@ -16,7 +16,7 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
     private addNewCard(trelloKanbanCard: TrelloKanbanCard, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
         if (trelloKanbanCard.createdAt !== undefined) {
             const newCardId = state.createKanbanCard(trelloKanbanCard.id, trelloKanbanCard.name, trelloKanbanCard.createdAt);
-            trelloKanbanCard.transitions.forEach(aTrelloTransition => {
+            trelloKanbanCard.getTransitions().forEach(aTrelloTransition => {
                 state.addTransition(trelloKanbanCard.id, newCardId, aTrelloTransition);
             });
 
@@ -68,7 +68,7 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
         const knownTransitions = kanbanCard.history.transitions;
         const notFound = -1;
         const thresholdMsForAtTheSameTime = 1100;
-        trelloKanbanCard.transitions.forEach(aTransition => {
+        trelloKanbanCard.getTransitions().forEach(aTransition => {
             const indexOfCorrespondingTransition = knownTransitions.findIndex(transition => Math.abs(transition.occurredAt.getTime() - aTransition.at.getTime()) < thresholdMsForAtTheSameTime);
             if (indexOfCorrespondingTransition === notFound) {
                 state.addTransition(trelloKanbanCard.id, kanbanCard.id, aTransition);
