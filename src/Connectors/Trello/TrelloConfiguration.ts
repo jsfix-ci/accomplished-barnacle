@@ -67,10 +67,12 @@ export class TrelloConfiguration extends Configuration {
         return 'https://api.trello.com/1/boards/' + this._board + '/cards?' + fields + '&' + this.keyAndTokenSuffixOfUrl();
     }
 
-    public actionsOfCardURL(cardId: string): string {
-        const filter = 'filter=updateCard:idList,createCard,closed';
+    public actionsOfCardURL(cardId: string, onlyClosed = false): string {
+        const filter = 'filter=updateCard:' + (onlyClosed ? 'closed' : 'idList,createCard');
+        const dontReturnMemberCreatorFilter = 'memberCreator=false';
         const fields = 'fields=data,date,type';
-        return 'https://api.trello.com/1/cards/' + cardId + '/actions?' + filter + '&' + fields + '&' + this.keyAndTokenSuffixOfUrl();
+
+        return 'https://api.trello.com/1/cards/' + cardId + '/actions?' + filter + '&' + fields + '&' + dontReturnMemberCreatorFilter + '&' + this.keyAndTokenSuffixOfUrl();
     }
 
     private keyAndTokenSuffixOfUrl(): string {

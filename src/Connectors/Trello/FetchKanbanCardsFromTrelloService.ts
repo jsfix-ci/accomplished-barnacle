@@ -1,6 +1,6 @@
 import { TrelloConfiguration } from "./TrelloConfiguration";
 import { HttpClient } from "../../Backend/HttpClient";
-import { Observable, of } from "rxjs";
+import { Observable, of, concat } from "rxjs";
 import { map, mergeAll, reduce, concatMap } from 'rxjs/operators';
 import { TrelloKanbanCard } from './TrelloKanbanCard';
 
@@ -41,11 +41,18 @@ export class FetchKanbanCardsFromTrelloService {
             }),
             map<TrelloKanbanCard, Observable<TrelloKanbanCard>>(
                 (card: TrelloKanbanCard) => {
-                    return httpClient.get(configuration.actionsOfCardURL(card.id)).pipe(
+                    const nonClosedActions = httpClient.get(configuration.actionsOfCardURL(card.id)).pipe(
+                        reduce<TrelloActionResponse, TrelloKanbanCard>((acc: TrelloKanbanCard, value: TrelloActionResponse) => {
+                            return this.mergeWithTrelloAction(acc, value);
+                        }, card)
+                    );
+
+                    const closedActions = httpClient.get(configuration.actionsOfCardURL(card.id, true)).pipe(
                         reduce<TrelloActionResponse, TrelloKanbanCard>((acc: TrelloKanbanCard, value: TrelloActionResponse) => {
                             return this.mergeWithTrelloAction(acc, value);
                         }, card)
                     )
+                    return concat(nonClosedActions, closedActions);
                 }
             ),
             mergeAll<TrelloKanbanCard>()
