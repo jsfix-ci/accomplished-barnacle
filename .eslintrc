@@ -1,12 +1,40 @@
 {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "no-warning-comments": [
+      "error",
+      {
+        "terms": [
+          "todo",
+          "fixme",
+          "any other term"
+        ],
+        "location": "anywhere"
+      }
     ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ]
+    "no-new": "error",
+    "no-magic-numbers": [
+      "error",
+      {
+        "ignore": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "no-invalid-this": "error",
+    "no-else-return": "error",
+    "no-constructor-return": "error",
+    "default-case-last": "error"
   }
+}

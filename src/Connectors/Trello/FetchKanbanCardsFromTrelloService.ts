@@ -27,14 +27,14 @@ type TrelloActionResponse = {
 
 export class FetchKanbanCardsFromTrelloService {
     public fetch(httpClient: HttpClient, configuration: TrelloConfiguration): Observable<TrelloKanbanCard> {
+        const rateLimitPerCardMs = 100;
         return httpClient.get(configuration.cardURL()).pipe(map<TrelloCardResponse, TrelloKanbanCard>(
             (value: TrelloCardResponse) => {
                 return new TrelloKanbanCard(value.name, value.id, value.labels.map(completeLabelInfo => completeLabelInfo.name));
             }),
             // wait for 0.1 seconds, as this is the rate limit imposed by Trello
             concatMap(value => {
-
-                return new Promise(resolve => setTimeout(() => resolve(value), 100));
+                return new Promise(resolve => setTimeout(() => resolve(value), rateLimitPerCardMs));
             }),
             concatMap(value => {
                 return of(value);

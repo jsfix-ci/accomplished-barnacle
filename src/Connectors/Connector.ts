@@ -27,6 +27,7 @@ export abstract class Connector {
         if (!this._differenceServices.has(domainDifference)) {
             return;
         }
+        const waitBetweenChecksMs = 100;
         let allObjectEventsForwarded = false;
         this._differenceServices.get(domainDifference).reconciliate(topic, board, logger).subscribe({
             next(objectEvent: ObjectEvent) {
@@ -44,7 +45,7 @@ export abstract class Connector {
 
         let timeout = undefined;
         while (!allObjectEventsForwarded) {
-            await new Promise(r => timeout = setTimeout(r, 100));
+            await new Promise(r => timeout = setTimeout(r, waitBetweenChecksMs));
             clearTimeout(timeout);
             timeout = undefined;
         }

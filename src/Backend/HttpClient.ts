@@ -8,6 +8,9 @@ import { IHTTPClient } from 'prime-barnacle';
 import { Observable } from 'rxjs';
 import { ObjectEventREST } from 'choicest-barnacle';
 
+
+const HTTP_SUCCESS = 200;
+
 export class HttpClient implements IHTTPClient {
     private readonly logger: Logger;
     private readonly getHttp;
@@ -35,7 +38,7 @@ export class HttpClient implements IHTTPClient {
                 method: 'DELETE',
             }
             const req = this.requestHttp(options, (res: http.IncomingMessage) => {
-                if (res.statusCode !== undefined && res.statusCode !== 200) {
+                if (res.statusCode !== undefined && res.statusCode !== HTTP_SUCCESS) {
                     this.logger.error('could not transmit message to ' + clientUrl);
                     this.logger.error(' request returned with HTTP result code ' + res.statusCode);
                 }
@@ -62,7 +65,7 @@ export class HttpClient implements IHTTPClient {
                 }
             }
             const req = this.requestHttp(options, (res: http.IncomingMessage) => {
-                if (res.statusCode !== undefined && res.statusCode !== 200) {
+                if (res.statusCode !== undefined && res.statusCode !== HTTP_SUCCESS) {
                     this.logger.error('could not transmit message to ' + clientUrl);
                     this.logger.error(' request returned with HTTP result code ' + res.statusCode);
                     this.logger.error(' transferred json ' + JSON.stringify(json));
@@ -85,7 +88,7 @@ export class HttpClient implements IHTTPClient {
             this.getHttp(urlObject,
                 (res) => {
                     const statusCode = res.statusCode;
-                    if (statusCode !== 200) {
+                    if (statusCode !== HTTP_SUCCESS) {
                         subscriber.error(statusCode);
                         // consume response data to free up memory
                         res.resume;

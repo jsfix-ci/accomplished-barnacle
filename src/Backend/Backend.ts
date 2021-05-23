@@ -43,8 +43,9 @@ export class Backend implements ITopicService {
 
     public async blockUntilBackendHasProcessedRequests(): Promise<void> {
         let timeout = undefined;
+        const waitForNextCallMs = 100;
         while (this.client.hasPendingRequests()) {
-            await new Promise(r => timeout = setTimeout(r, 100));
+            await new Promise(r => timeout = setTimeout(r, waitForNextCallMs));
             clearTimeout(timeout);
             timeout = undefined;
         }

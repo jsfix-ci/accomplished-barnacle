@@ -66,9 +66,11 @@ export class ReconciliateDifferencesToTrelloKanbanCard {
 
     private addMissingTransitions(trelloKanbanCard: TrelloKanbanCard, kanbanCard: KanbanCard, state: TrelloJointKanbanCardState): TrelloJointKanbanCardState {
         const knownTransitions = kanbanCard.history.transitions;
+        const notFound = -1;
+        const thresholdMsForAtTheSameTime = 1100;
         trelloKanbanCard.transitions.forEach(aTransition => {
-            const indexOfCorrespondingTransition = knownTransitions.findIndex(transition => Math.abs(transition.occurredAt.getTime() - aTransition.at.getTime()) < 1100);
-            if (indexOfCorrespondingTransition === -1) {
+            const indexOfCorrespondingTransition = knownTransitions.findIndex(transition => Math.abs(transition.occurredAt.getTime() - aTransition.at.getTime()) < thresholdMsForAtTheSameTime);
+            if (indexOfCorrespondingTransition === notFound) {
                 state.addTransition(trelloKanbanCard.id, kanbanCard.id, aTransition);
             }
         });
