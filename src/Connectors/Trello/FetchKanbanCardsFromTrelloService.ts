@@ -61,6 +61,9 @@ export class FetchKanbanCardsFromTrelloService {
             case 'updateCard':
                 kanbanCard.addTransition(action.data.listAfter.name, new Date(action.date));
                 break;
+            case 'closed':
+                console.log('closed trello action:' + action.data);
+                break;
             default:
                 console.log(action);
         }
