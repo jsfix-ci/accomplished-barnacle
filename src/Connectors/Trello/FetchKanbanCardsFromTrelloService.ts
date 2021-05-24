@@ -10,12 +10,15 @@ type TrelloCardResponse = {
     labels: { name: string }[]
 }
 
-type TrelloActionResponse = {
+export type TrelloActionResponse = {
     name: string,
     id: string,
     date: string,
     type: string,
     data: {
+        old: {
+            closed: boolean
+        },
         list: {
             id: string,
             name: string
@@ -59,25 +62,32 @@ export class FetchKanbanCardsFromTrelloService {
         );
     }
 
-    private mergeWithTrelloAction(kanbanCard: TrelloKanbanCard, action: TrelloActionResponse): TrelloKanbanCard {
+    public mergeWithTrelloAction(kanbanCard: TrelloKanbanCard, action: TrelloActionResponse): TrelloKanbanCard {
         switch (action.type) {
             case 'createCard':
                 kanbanCard.createdAt = new Date(action.date);
                 kanbanCard.addTransition(action.data.list.name, new Date(action.date));
                 break;
             case 'updateCard':
-                // eslint-disable-next-line no-prototype-builtins
-                if (action.data.hasOwnProperty('listAfter') && action.data.listAfter.hasOwnProperty('name')) {
-                    kanbanCard.addTransition(action.data.listAfter.name, new Date(action.date));
-                } else {
-                    console.log(action);
-                }
-                break;
-            case 'closed':
-                console.log('closed trello action:' + action.data);
+                kanbanCard = this.mergeWithUpdateCard(kanbanCard, action);
                 break;
             default:
                 console.log(action);
+        }
+        return kanbanCard;
+    }
+
+    private mergeWithUpdateCard(kanbanCard: TrelloKanbanCard, action: TrelloActionResponse): TrelloKanbanCard {
+        // eslint-disable-next-line no-prototype-builtins
+        if (action.data.hasOwnProperty('listAfter') && action.data.listAfter.hasOwnProperty('name')) {
+            kanbanCard.addTransition(action.data.listAfter.name, new Date(action.date));
+        } else {
+            const isClosedNow = !action.data.old.closed;
+            if (isClosedNow) {
+                kanbanCard.addTransition('__ARCHIVED__', new Date(action.date));
+            } else {
+                kanbanCard.addTransition(action.data.list.name, new Date(action.date));
+            }
         }
         return kanbanCard;
     }

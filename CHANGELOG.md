@@ -1,3 +1,6 @@
+# next version
+- trello connector: An archived card is now moved to the trash. It is also handled if a card is moved from the archive back to the kanban card. 
+
 # 1.3.0
 - user can delete topics as well
 - projects are now labelled as immutable for other systems
