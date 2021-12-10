@@ -27,15 +27,15 @@
     "@types/eventsource": "^1.1.7",
     "@types/jest": "^27.0.2",
     "@types/node": "^14.14.39",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
-    "babel-jest": "^27.3.1",
-    "eslint": "^8.2.0",
-    "jest": "^27.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "babel-jest": "^27.4.4",
+    "eslint": "^8.4.1",
+    "jest": "^27.4.4",
     "jest-junit": "^13.0.0",
-    "ts-jest": "^27.0.7",
+    "ts-jest": "^27.1.1",
     "ts-node": "^10.4.0",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.3"
   },
   "dependencies": {
     "choicest-barnacle": "2.5.1",
