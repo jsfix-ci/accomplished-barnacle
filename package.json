@@ -21,21 +21,21 @@
     "lint": "eslint src/ --ext .ts"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
-    "@types/eventsource": "^1.1.7",
-    "@types/jest": "^27.0.2",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
+    "@types/eventsource": "^1.1.8",
+    "@types/jest": "^27.0.3",
     "@types/node": "^14.14.39",
-    "@typescript-eslint/eslint-plugin": "^5.6.0",
-    "@typescript-eslint/parser": "^5.6.0",
-    "babel-jest": "^27.4.4",
-    "eslint": "^8.4.1",
-    "jest": "^27.4.4",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "babel-jest": "^27.4.5",
+    "eslint": "^8.5.0",
+    "jest": "^27.4.5",
     "jest-junit": "^13.0.0",
-    "ts-jest": "^27.1.1",
+    "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.3"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "choicest-barnacle": "2.5.1",
