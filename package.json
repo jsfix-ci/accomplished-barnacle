@@ -42,7 +42,7 @@
     "eventsource": "^1.1.0",
     "outstanding-barnacle": "^6.6.1",
     "prime-barnacle": "^2.6.1",
-    "rxjs": "^6.6.7",
+    "rxjs": "^7.5.6",
     "sitka": "^1.0.5"
   }
 }
